@@ -1,4 +1,5 @@
 export * from './api'
+export * from './component'
 export * from './connection'
 export * from './lifecycle'
 export * from './hooks'
