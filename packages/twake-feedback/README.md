@@ -67,7 +67,7 @@ The Sentry form opens on the same side, at the same height: the component keeps 
 
 - The button is a native `button` named by its visible label ("Something wrong?"), described by a tooltip, reachable with the keyboard
 - Dragging is never required: the context menu key, `Shift+F10` (`aria-keyshortcuts`), a right click or a long press with a finger open a menu with "Move to the left", "Move to the right" and "Reset position"
-- The button is above the page (`zIndex.speedDial`) and below the MUI modals
+- The button is above the MUI modals, drawers and their backdrops (`zIndex.modal + 1`), so it stays usable while a dialog is open, and below snackbars and tooltips
 
 ## Content Security Policy
 

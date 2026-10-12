@@ -59,7 +59,9 @@ const clampRange = (value: number, max: number): number =>
 
 const StyledFab = styled(Fab)(({ theme }) => ({
   position: 'fixed',
-  zIndex: theme.zIndex.speedDial,
+  // Above dialogs and drawers so a problem met in one can be reported from
+  // there, below snackbars and tooltips
+  zIndex: theme.zIndex.modal + 1,
   gap: theme.spacing(1),
   textTransform: 'none',
   whiteSpace: 'nowrap',
@@ -289,6 +291,7 @@ export const FeedbackButton = ({
         anchorEl={button}
         open={menuOpen}
         onClose={closeMenu}
+        sx={{ zIndex: theme => theme.zIndex.modal + 2 }}
         slotProps={{
           list: {
             'aria-label': strings.menuLabel

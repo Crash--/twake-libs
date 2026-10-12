@@ -1,3 +1,4 @@
+import { Dialog } from '@linagora/twake-mui'
 import { act, fireEvent, screen } from '@testing-library/react'
 import React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -103,6 +104,35 @@ describe('FeedbackButton', () => {
     expect(
       screen.getByRole('button', { name: 'Un problème ?' })
     ).toBeInTheDocument()
+  })
+
+  it('stays above an open dialog, and its menu above it', () => {
+    renderWithProviders(
+      <>
+        <FeedbackButton attach={makeAttach().attach} storageKey="test" />
+        <Dialog open data-testid="dialog" />
+      </>
+    )
+    fireEvent.contextMenu(getButton())
+
+    // The theme gives MUI's layers as `var(--twake-zIndex-…)`, set on :root
+    const zIndexOf = (el: HTMLElement): number => {
+      const value = window.getComputedStyle(el).zIndex
+      const variable = /^var\((--[^)]+)\)$/.exec(value)?.[1]
+      return Number(
+        variable
+          ? window
+              .getComputedStyle(document.documentElement)
+              .getPropertyValue(variable)
+          : value
+      )
+    }
+    const button = zIndexOf(getButton())
+
+    expect(button).toBeGreaterThan(zIndexOf(screen.getByTestId('dialog')))
+    expect(zIndexOf(screen.getByTestId('twake-feedback-menu'))).toBeGreaterThan(
+      button
+    )
   })
 
   it('detaches the form and removes its style on unmount', () => {
