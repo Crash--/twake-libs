@@ -59,7 +59,7 @@ The tokens are kept in memory only, never in web storage: a reload signs in agai
 
 ## In a frame of Twake Space
 
-An app shown in a frame of another app (Twake Space, ADR 010 of twake-space-architecture) cannot show the SSO portal: the SSO refuses to be framed. Give `framed`, a boolean or, for an app framed on some routes only, a function read at each sign-in:
+An app shown in a frame of another app (Twake Space, ADR 010 of twake-space-architecture) cannot show the SSO portal: the SSO may refuse to be framed. Give `framed`, a boolean or, for an app framed on some routes only, a function read at each sign-in:
 
 ```ts
 configureAuth({
