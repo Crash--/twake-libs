@@ -58,6 +58,20 @@ Sign out:
 
 The tokens are kept in memory only, never in web storage: a reload signs in again through the SSO, silently while the SSO session lasts.
 
+## A local SSO over plain HTTP
+
+The SSO must be served over HTTPS. A development stack or an end-to-end test may run it over plain HTTP on the same machine: set `allowInsecureSso`, from a setting of the deployment rather than always:
+
+```ts
+configureAuth({
+  ssoUrl: 'http://localhost:5556/dex',
+  // ...
+  allowInsecureSso: window.SSO_ALLOW_INSECURE === 'true'
+})
+```
+
+It only accepts an SSO on the machine itself (`localhost`, `*.localhost`, `127.x.x.x`, `[::1]`): plain HTTP to another host would carry the tokens in clear over the network, so the sign-in fails there even with the option set.
+
 ## In a frame of Twake Space
 
 An app shown in a frame of another app (Twake Space, ADR 010 of twake-space-architecture) cannot show the SSO portal: the SSO may refuse to be framed. Give `framed`, a boolean or, for an app framed on some routes only, a function read at each sign-in:

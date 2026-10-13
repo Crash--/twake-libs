@@ -5,7 +5,12 @@ import { configureAuth, type AuthConfig } from './oidc'
 /** Browser globals the library reads, for tests running in node */
 export function setUpBrowser(
   href: string,
-  options: Pick<AuthConfig, 'framed' | 'onLoginRequired'> = {}
+  options: Partial<
+    Pick<
+      AuthConfig,
+      'framed' | 'onLoginRequired' | 'ssoUrl' | 'allowInsecureSso'
+    >
+  > = {}
 ): {
   assign: ReturnType<typeof vi.fn>
   replace: ReturnType<typeof vi.fn>

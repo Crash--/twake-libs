@@ -32,6 +32,13 @@ export interface AuthConfig {
    * level (Twake Space: `twake-embed:login-required`). Called once.
    */
   onLoginRequired?: () => void
+  /**
+   * Lets a local SSO serve plain HTTP, for development stacks and end-to-end
+   * tests. Only `localhost`, `*.localhost`, `127.x.x.x` and `[::1]` are
+   * accepted: plain HTTP to any other host would carry the tokens in clear
+   * over the network. Off by default.
+   */
+  allowInsecureSso?: boolean
 }
 
 export interface LoginResult {
@@ -50,6 +57,8 @@ interface RedirectState {
 }
 
 const DISCOVERY_TIMEOUT_S = 10
+/** Hosts of the machine itself: plain HTTP to them never leaves it */
+const LOOPBACK_HOST = /^(localhost|.+\.localhost|127(\.\d{1,3}){3}|\[::1\])$/
 const REDIRECT_STATE_KEY = 'redirectState'
 /**
  * Answers of the SSO to a silent sign-in when it would have to show a page:
@@ -95,14 +104,24 @@ export const isOnRedirectUri = (): boolean =>
   new URL(getAuthConfig().redirectUri, window.location.href).pathname
 
 async function discover(): Promise<client.Configuration> {
-  const { ssoUrl, clientId } = getAuthConfig()
+  const { ssoUrl, clientId, allowInsecureSso = false } = getAuthConfig()
+  const issuer = new URL(ssoUrl)
+  const insecure = issuer.protocol === 'http:'
+  if (insecure && !(allowInsecureSso && LOOPBACK_HOST.test(issuer.hostname))) {
+    throw new Error(
+      `The SSO ${issuer.origin} is not served over HTTPS: only a local SSO may be, with allowInsecureSso`
+    )
+  }
   return await client.discovery(
-    new URL(ssoUrl),
+    issuer,
     clientId,
     // Tolerate up to 5 minutes of clock skew between browser and SSO server
     { [client.clockSkew]: 300 },
     undefined,
-    { timeout: DISCOVERY_TIMEOUT_S }
+    {
+      timeout: DISCOVERY_TIMEOUT_S,
+      execute: insecure ? [client.allowInsecureRequests] : []
+    }
   )
 }
 

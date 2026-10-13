@@ -13,6 +13,7 @@ import { setUpBrowser } from './testUtils'
 vi.mock('openid-client', () => ({
   discovery: vi.fn().mockResolvedValue({}),
   clockSkew: Symbol('clockSkew'),
+  allowInsecureRequests: Symbol('allowInsecureRequests'),
   randomPKCECodeVerifier: vi.fn(() => 'verifier'),
   randomState: vi.fn(() => 'state'),
   calculatePKCECodeChallenge: vi.fn().mockResolvedValue('challenge'),
@@ -169,5 +170,71 @@ describe('sign-in in a frame', () => {
 
     await expect(completeLogin()).resolves.not.toBeNull()
     expect(client.authorizationCodeGrant).toHaveBeenCalled()
+  })
+})
+
+describe('SSO over plain HTTP', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    clearTokenSet()
+  })
+
+  it('requires HTTPS by default', async () => {
+    setUpBrowser('https://app.example.com/', {
+      ssoUrl: 'http://127.0.0.1:5556/dex'
+    })
+
+    await expect(startLogin()).rejects.toThrow('allowInsecureSso')
+    expect(client.discovery).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    'http://localhost:5556',
+    'http://sso.localhost',
+    'http://127.0.0.1:5556/dex',
+    'http://[::1]:5556'
+  ])('lets %s serve plain HTTP with allowInsecureSso', async ssoUrl => {
+    const { assign } = setUpBrowser('https://app.example.com/', {
+      ssoUrl,
+      allowInsecureSso: true
+    })
+
+    await startLogin()
+
+    expect(client.discovery).toHaveBeenCalledWith(
+      new URL(ssoUrl),
+      'app',
+      expect.anything(),
+      undefined,
+      expect.objectContaining({ execute: [client.allowInsecureRequests] })
+    )
+    expect(assign).toHaveBeenCalled()
+  })
+
+  it.each(['http://sso.example.com', 'http://localhost.example.com'])(
+    'never lets %s serve plain HTTP',
+    async ssoUrl => {
+      setUpBrowser('https://app.example.com/', {
+        ssoUrl,
+        allowInsecureSso: true
+      })
+
+      await expect(startLogin()).rejects.toThrow('allowInsecureSso')
+      expect(client.discovery).not.toHaveBeenCalled()
+    }
+  )
+
+  it('keeps HTTPS checks for an SSO served over HTTPS', async () => {
+    setUpBrowser('https://app.example.com/', { allowInsecureSso: true })
+
+    await startLogin()
+
+    expect(client.discovery).toHaveBeenCalledWith(
+      new URL('https://sso.example.com'),
+      'app',
+      expect.anything(),
+      undefined,
+      expect.objectContaining({ execute: [] })
+    )
   })
 })
