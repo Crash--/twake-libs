@@ -56,4 +56,24 @@ describe('API requests', () => {
     )
     expect(startLogin).not.toHaveBeenCalled()
   })
+
+  it('framed, tells the page around the frame once, and does not leave', async () => {
+    const onLoginRequired = vi.fn()
+    const { setUpBrowser } = await import('./testUtils')
+    setUpBrowser('https://app.example.com/embed/calendars/team', {
+      framed: true,
+      onLoginRequired
+    })
+    const startLogin = vi.spyOn(oidc, 'startLogin').mockResolvedValue()
+    const request = new Request('https://api.example.com/users', {
+      headers: { Authorization: 'Bearer expired' }
+    })
+    const unauthorized = new Response(null, { status: 401 })
+
+    await redirectOnUnauthorized(request, {}, unauthorized)
+    await redirectOnUnauthorized(request, {}, unauthorized)
+
+    expect(onLoginRequired).toHaveBeenCalledTimes(1)
+    expect(startLogin).not.toHaveBeenCalled()
+  })
 })

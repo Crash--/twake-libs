@@ -12,6 +12,21 @@ export interface AuthConfig {
   postLogoutRedirectUri: string
   /** Backend of the application: the only one that gets the access token */
   apiUrl: string
+  /**
+   * The page is shown in the frame of another app (Twake Space): the SSO
+   * refuses to show its portal there, so the sign-in asks it to show nothing
+   * (`prompt=none`) and replaces the page, leaving no entry in the history the
+   * frame shares with the page around it. Read at each sign-in: an app framed
+   * on some of its routes only gives a function.
+   */
+  framed?: boolean | (() => boolean)
+  /**
+   * Framed, the session ended (the backend answered 401): a frame never
+   * navigates its document after its boot, so instead of signing in again
+   * the app tells the page around it, which signs the user in at the top
+   * level (Twake Space: `twake-embed:login-required`). Called once.
+   */
+  onLoginRequired?: () => void
 }
 
 export interface LoginResult {
@@ -25,10 +40,37 @@ interface RedirectState {
   code_verifier: string
   state: string
   returnTo: string
+  /** Asked with `prompt=none`: the SSO may answer that it needs the user */
+  silent?: boolean
 }
 
 const DISCOVERY_TIMEOUT_S = 10
 const REDIRECT_STATE_KEY = 'redirectState'
+/**
+ * Answers of the SSO to a silent sign-in when it would have to show a page:
+ * no session, consent, account choice (OpenID Connect Core 1.0, 3.1.2.6)
+ */
+const LOGIN_REQUIRED_ERRORS = new Set([
+  'login_required',
+  'interaction_required',
+  'consent_required',
+  'account_selection_required'
+])
+
+/**
+ * A silent sign-in was refused: the SSO needs the user, who signs in again
+ * where the SSO may show its portal (the page around the frame).
+ */
+export class LoginRequiredError extends Error {
+  /** Path of the application the sign-in started from */
+  readonly returnTo: string
+
+  constructor(returnTo: string) {
+    super('The SSO needs the user to sign in')
+    this.name = 'LoginRequiredError'
+    this.returnTo = returnTo
+  }
+}
 
 let authConfig: AuthConfig | null = null
 
@@ -59,6 +101,11 @@ async function discover(): Promise<client.Configuration> {
   )
 }
 
+export const isFramed = (): boolean => {
+  const { framed } = getAuthConfig()
+  return typeof framed === 'function' ? framed() : framed === true
+}
+
 function readRedirectState(): RedirectState | null {
   try {
     const saved = JSON.parse(
@@ -74,11 +121,21 @@ function readRedirectState(): RedirectState | null {
 }
 
 /**
+ * The path the pending sign-in comes back to, without finishing it: the
+ * callback page reads it to know which screen the sign-in is for. Null when
+ * no sign-in is pending.
+ */
+export function getPendingReturnTo(): string | null {
+  return readRedirectState()?.returnTo ?? null
+}
+
+/**
  * Sends the user to the SSO, which sends them back to the redirect URI where
- * completeLogin finishes the sign-in.
+ * completeLogin finishes the sign-in. Framed, the SSO shows nothing.
  */
 export async function startLogin(): Promise<void> {
   const { redirectUri, scope } = getAuthConfig()
+  const silent = isFramed()
   const code_verifier = client.randomPKCECodeVerifier()
   const state = client.randomState()
   const authorizationUrl = client.buildAuthorizationUrl(await discover(), {
@@ -86,7 +143,8 @@ export async function startLogin(): Promise<void> {
     scope,
     code_challenge: await client.calculatePKCECodeChallenge(code_verifier),
     code_challenge_method: 'S256',
-    state
+    state,
+    ...(silent && { prompt: 'none' })
   })
   const { pathname, search, hash } = window.location
   const redirectState: RedirectState = {
@@ -96,10 +154,12 @@ export async function startLogin(): Promise<void> {
     // A path starting with // would be a protocol-relative URL to another site.
     returnTo: isOnRedirectUri()
       ? '/'
-      : pathname.replace(/^\/+/, '/') + search + hash
+      : pathname.replace(/^\/+/, '/') + search + hash,
+    ...(silent && { silent })
   }
   sessionStorage.setItem(REDIRECT_STATE_KEY, JSON.stringify(redirectState))
-  window.location.assign(authorizationUrl)
+  if (silent) window.location.replace(authorizationUrl)
+  else window.location.assign(authorizationUrl)
 }
 
 /**
@@ -107,11 +167,21 @@ export async function startLogin(): Promise<void> {
  * tokens are kept for the API requests before this resolves.
  *
  * @returns null when no sign-in is pending, e.g. the page was reloaded.
+ * @throws LoginRequiredError when the SSO refused a silent sign-in.
  */
 export async function completeLogin(): Promise<LoginResult | null> {
   const saved = readRedirectState()
   sessionStorage.removeItem(REDIRECT_STATE_KEY)
   if (!saved) return null
+
+  const answer = new URL(window.location.href).searchParams
+  if (
+    saved.silent &&
+    LOGIN_REQUIRED_ERRORS.has(answer.get('error') ?? '') &&
+    answer.get('state') === saved.state
+  ) {
+    throw new LoginRequiredError(saved.returnTo)
+  }
 
   const configuration = await discover()
   const tokenSet = await client.authorizationCodeGrant(

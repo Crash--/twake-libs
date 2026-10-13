@@ -1,7 +1,12 @@
 import * as client from 'openid-client'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { completeLogin, startLogin } from './oidc'
+import {
+  completeLogin,
+  getPendingReturnTo,
+  LoginRequiredError,
+  startLogin
+} from './oidc'
 import { getAccessToken, clearTokenSet } from './session'
 import { setUpBrowser } from './testUtils'
 
@@ -76,5 +81,93 @@ describe('sign-in', () => {
     await startLogin()
 
     expect((await completeLogin())?.returnTo).toBe('/')
+  })
+
+  it('tells where the pending sign-in comes back, without finishing it', async () => {
+    setUpBrowser('https://app.example.com/embed/calendars/team')
+    expect(getPendingReturnTo()).toBeNull()
+
+    await startLogin()
+
+    expect(getPendingReturnTo()).toBe('/embed/calendars/team')
+    expect(getPendingReturnTo()).toBe('/embed/calendars/team')
+  })
+})
+
+describe('sign-in in a frame', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    clearTokenSet()
+  })
+
+  it('asks the SSO to show nothing, and leaves no history entry', async () => {
+    const { assign, replace } = setUpBrowser(
+      'https://app.example.com/embed/calendars/team',
+      { framed: () => window.location.pathname.startsWith('/embed/') }
+    )
+
+    await startLogin()
+
+    expect(client.buildAuthorizationUrl).toHaveBeenCalledWith(
+      {},
+      expect.objectContaining({ prompt: 'none' })
+    )
+    expect(replace).toHaveBeenCalledWith(
+      new URL('https://sso.example.com/auth')
+    )
+    expect(assign).not.toHaveBeenCalled()
+  })
+
+  it('signs in as usual outside the frame', async () => {
+    const { assign, replace } = setUpBrowser(
+      'https://app.example.com/calendar',
+      {
+        framed: () => window.location.pathname.startsWith('/embed/')
+      }
+    )
+
+    await startLogin()
+
+    expect(client.buildAuthorizationUrl).toHaveBeenCalledWith(
+      {},
+      expect.not.objectContaining({ prompt: 'none' })
+    )
+    expect(assign).toHaveBeenCalled()
+    expect(replace).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    'login_required',
+    'interaction_required',
+    'consent_required',
+    'account_selection_required'
+  ])('reports a silent sign-in the SSO refused with %s', async error => {
+    setUpBrowser('https://app.example.com/embed/calendars/team', {
+      framed: true
+    })
+    await startLogin()
+
+    window.location.href = `https://app.example.com/callback?error=${error}&state=state`
+    const refused = completeLogin()
+
+    await expect(refused).rejects.toBeInstanceOf(LoginRequiredError)
+    await expect(refused).rejects.toMatchObject({
+      returnTo: '/embed/calendars/team'
+    })
+    expect(client.authorizationCodeGrant).not.toHaveBeenCalled()
+    expect(getPendingReturnTo()).toBeNull()
+  })
+
+  it('takes no refusal for the answer to another sign-in', async () => {
+    setUpBrowser('https://app.example.com/embed/calendars/team', {
+      framed: true
+    })
+    await startLogin()
+
+    window.location.href =
+      'https://app.example.com/callback?error=login_required&state=other'
+
+    await expect(completeLogin()).resolves.not.toBeNull()
+    expect(client.authorizationCodeGrant).toHaveBeenCalled()
   })
 })

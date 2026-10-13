@@ -2,7 +2,9 @@ export {
   configureAuth,
   startLogin,
   completeLogin,
+  getPendingReturnTo,
   logOut,
+  LoginRequiredError,
   type AuthConfig,
   type LoginResult
 } from './oidc'

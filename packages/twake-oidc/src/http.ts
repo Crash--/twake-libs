@@ -1,7 +1,8 @@
-import { getAuthConfig, isOnRedirectUri, startLogin } from './oidc'
+import { getAuthConfig, isFramed, isOnRedirectUri, startLogin } from './oidc'
 import { getAccessToken } from './session'
 
 let isRedirectingToSso = false
+let hasReportedLoginRequired = false
 
 const isApiRequest = (request: Request): boolean => {
   try {
@@ -31,6 +32,7 @@ export function addAuthorization(request: Request): void {
 /**
  * ky afterResponse hook: a 401 from the application backend to a request that
  * carried a token means the session is over, so the user signs in again.
+ * Framed, the page around signs them in instead (`onLoginRequired`).
  */
 export async function redirectOnUnauthorized(
   request: Request,
@@ -44,6 +46,12 @@ export async function redirectOnUnauthorized(
     // The sign-in is being completed there: redirecting would loop
     isOnRedirectUri()
   ) {
+    return
+  }
+  if (isFramed()) {
+    // ky then rejects the request with the 401
+    if (!hasReportedLoginRequired) getAuthConfig().onLoginRequired?.()
+    hasReportedLoginRequired = true
     return
   }
   if (isRedirectingToSso) {

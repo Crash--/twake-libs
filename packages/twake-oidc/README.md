@@ -56,3 +56,22 @@ Sign out:
 - `onSessionEndedElsewhere(callback)` calls back when another tab signs out.
 
 The tokens are kept in memory only, never in web storage: a reload signs in again through the SSO, silently while the SSO session lasts.
+
+## In a frame of Twake Space
+
+An app shown in a frame of another app (Twake Space, ADR 010 of twake-space-architecture) cannot show the SSO portal: the SSO refuses to be framed. Give `framed`, a boolean or, for an app framed on some routes only, a function read at each sign-in:
+
+```ts
+configureAuth({
+  // ...
+  framed: () => window.location.pathname.startsWith('/embed/'),
+  onLoginRequired: () => twakeSpace?.notifyLoginRequired()
+})
+```
+
+Framed:
+
+- `startLogin()` asks the SSO to show nothing (`prompt=none`) and leaves with `location.replace`, so the frame adds no entry to the history it shares with the page around it.
+- `completeLogin()` rejects with a `LoginRequiredError` when the SSO answers that it needs the user (`login_required`, `interaction_required`, `consent_required`, `account_selection_required`). Its `returnTo` is the path the sign-in started from. The app shows that the session expired and tells the page around it, which signs the user in at the top level.
+- On a 401 from the backend, `redirectOnUnauthorized` never navigates the frame: it calls `onLoginRequired` once instead.
+- `getPendingReturnTo()` tells, on the callback page, which path a pending sign-in comes back to, without finishing it.

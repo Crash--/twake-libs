@@ -1,12 +1,17 @@
 import { vi } from 'vitest'
 
-import { configureAuth } from './oidc'
+import { configureAuth, type AuthConfig } from './oidc'
 
 /** Browser globals the library reads, for tests running in node */
-export function setUpBrowser(href: string): {
+export function setUpBrowser(
+  href: string,
+  options: Pick<AuthConfig, 'framed' | 'onLoginRequired'> = {}
+): {
   assign: ReturnType<typeof vi.fn>
+  replace: ReturnType<typeof vi.fn>
 } {
   const assign = vi.fn()
+  const replace = vi.fn()
   const url = new URL(href)
   const storage = new Map<string, string>()
   vi.stubGlobal('window', {
@@ -15,7 +20,8 @@ export function setUpBrowser(href: string): {
       pathname: url.pathname,
       search: url.search,
       hash: url.hash,
-      assign
+      assign,
+      replace
     }
   })
   vi.stubGlobal('sessionStorage', {
@@ -29,7 +35,8 @@ export function setUpBrowser(href: string): {
     scope: 'openid email',
     redirectUri: 'https://app.example.com/callback',
     postLogoutRedirectUri: 'https://app.example.com',
-    apiUrl: 'https://api.example.com'
+    apiUrl: 'https://api.example.com',
+    ...options
   })
-  return { assign }
+  return { assign, replace }
 }
