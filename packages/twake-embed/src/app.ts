@@ -14,6 +14,7 @@
 // frame's load), and the app answers the origin that greeted it. Only a page the app's `frame-ancestors` allows can
 // be that parent, so the parent is trusted by construction: the header stays
 // mandatory. `hostOrigins` restricts the hosts further, when given.
+import { guardLinks } from './links.js'
 import {
   badgesMessage,
   metadataMessage,
@@ -33,6 +34,7 @@ import {
 } from './messages.js'
 import {
   embedRoute,
+  isBelow,
   parseEmbedUrl,
   staysBelow,
   type EmbedLocation
@@ -55,6 +57,11 @@ export interface TwakeSpaceOptions {
    * TwakeSpace frames `/#<prefix><resource id>`.
    */
   hashRouting?: boolean | undefined
+  /**
+   * A link or a form that leaves the embed route opens in a new tab and the
+   * frame stays, on by default. `false` for an app that handles them itself.
+   */
+  interceptExternalLinks?: boolean | undefined
   /** The frame's parent, for tests */
   parent?: Window | undefined
 }
@@ -142,23 +149,40 @@ export function connectToTwakeSpace(
     embedPrefix,
     hostOrigins,
     isResourceId = (): boolean => true,
-    hashRouting = false
+    hashRouting = false,
+    interceptExternalLinks = true
   } = options
   const parent = options.parent ?? window.parent
   if (parent === window) return null
   if (hostOrigins !== undefined && hostOrigins.length === 0) return null
 
-  const location = (): EmbedLocation | null => {
+  const locate = (url: {
+    pathname: string
+    search: string
+    hash: string
+  }): EmbedLocation | null => {
     if (hashRouting) {
       // Split as a hash router does: its pathname ends at the first ? or #
-      const route = window.location.hash.slice(1)
+      const route = url.hash.slice(1)
       const end = route.search(/[?#]/)
       const pathname = end === -1 ? route : route.slice(0, end)
       return parseEmbedUrl(embedPrefix, pathname, route.slice(pathname.length))
     }
-    const { pathname, search, hash } = window.location
-    return parseEmbedUrl(embedPrefix, pathname, search, hash)
+    return parseEmbedUrl(embedPrefix, url.pathname, url.search, url.hash)
   }
+  const location = (): EmbedLocation | null => locate(window.location)
+
+  // Off the embed route (the callback of the silent login) only another
+  // origin leaves it
+  const leavesRoute = (url: URL): boolean => {
+    if (url.origin !== window.location.origin) return true
+    const here = location()
+    if (here === null) return false
+    if (hashRouting && url.pathname !== window.location.pathname) return true
+    const there = locate(url)
+    return there?.resourceId !== here.resourceId || !isBelow(there.path)
+  }
+  const stopGuard = interceptExternalLinks ? guardLinks(leavesRoute) : null
 
   // Known once the host spoke, or given
   let origin: string | null = null
@@ -290,6 +314,7 @@ export function connectToTwakeSpace(
     syncHistory,
     disconnect: (): void => {
       stop?.()
+      stopGuard?.()
       window.removeEventListener('message', onMessage)
       origin = null
     }

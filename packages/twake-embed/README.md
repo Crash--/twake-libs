@@ -165,6 +165,15 @@ space?.notify({
 space?.closeNotification('call:!room')
 ```
 
+Links leaving the frame open in a new tab, and the frame stays on the app:
+
+- On once the app is connected; `connectToTwakeSpace({ interceptExternalLinks: false })` turns it off.
+- A user caused navigation (a click, a form, a script on a click) to an http(s) page that is not below the embed route is redirected to `window.open` with `noopener,noreferrer`.
+- Left alone: the silent login and its renewals (`location.replace`, no user activation), downloads, fragments of the page, `pushState`, traversals, form posts.
+- It listens to `navigate` (Navigation API) and also guards clicks and form submits: Firefox and WebKit do not fire `navigate` for a link or form to another origin.
+- Links to another origin are caught before the handlers of the app, so a component that stops the click cannot hide them. A same-origin link the app handles with `preventDefault` is left to the app.
+- TwakeSpace gives the frame `allow-popups-to-escape-sandbox`, so the new tab is a normal page.
+
 ## In TwakeSpace
 
 ```ts
