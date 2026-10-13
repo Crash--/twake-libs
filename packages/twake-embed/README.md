@@ -66,6 +66,15 @@ it, starting with `/`, `?` or `#`; a `//` or a `\\` in its pathname is refused. 
 reported while its promise is pending. Pass `isResourceId` to refuse ids that
 do not look like the app's.
 
+Once synced, a link leaving the embed route shown (another origin, another
+resource, a page of the app outside the route) opens in a new tab, and any
+other stays in the frame: TwakeSpace can neither see nor cancel a navigation
+of its frame. A capture-phase click guard turns such a link away before the
+app's router sees it, and the Navigation API catches the rest (forms,
+`location.assign`, router writes) where the browser has it. Downloads,
+reloads and a POST form go through. The frame opens the tab itself, so
+TwakeSpace frames the app with `allow-popups-to-escape-sandbox`.
+
 An app with a hash router (Twake Drive, served by cozy-stack, which knows no
 other path than its files) passes `hashRouting: true`: its embed route is read
 from the hash, and TwakeSpace frames `/#<prefix><resource id>`.

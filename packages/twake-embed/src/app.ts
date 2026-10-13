@@ -14,6 +14,7 @@
 // frame's load), and the app answers the origin that greeted it. Only a page the app's `frame-ancestors` allows can
 // be that parent, so the parent is trusted by construction: the header stays
 // mandatory. `hostOrigins` restricts the hosts further, when given.
+import { guardLinks } from './links.js'
 import {
   badgesMessage,
   metadataMessage,
@@ -33,6 +34,7 @@ import {
 } from './messages.js'
 import {
   embedRoute,
+  isBelow,
   parseEmbedUrl,
   staysBelow,
   type EmbedLocation
@@ -57,6 +59,8 @@ export interface TwakeSpaceOptions {
   hashRouting?: boolean | undefined
   /** The frame's parent, for tests */
   parent?: Window | undefined
+  /** The Navigation API, for tests */
+  navigation?: EventTarget | undefined
 }
 
 export interface HistoryHandlers {
@@ -122,7 +126,9 @@ export interface TwakeSpaceConnection {
    * Leaves the history to TwakeSpace, from now on: a push becomes a replace,
    * every change of the URL is reported (the current one first, as a
    * replace, once the host is known), and `load` and `navigate` are applied
-   * through the handlers. Once: a second call returns the same stop function.
+   * through the handlers. A link or a navigation leaving the embed route
+   * shown opens in a new tab. Once: a second call returns the same stop
+   * function.
    */
   syncHistory: (handlers: HistoryHandlers) => () => void
   /** Stops the history sync and forgets the host */
@@ -148,17 +154,25 @@ export function connectToTwakeSpace(
   if (parent === window) return null
   if (hostOrigins !== undefined && hostOrigins.length === 0) return null
 
-  const location = (): EmbedLocation | null => {
+  const locate = ({
+    pathname,
+    search,
+    hash
+  }: URL | Location): EmbedLocation | null => {
     if (hashRouting) {
       // Split as a hash router does: its pathname ends at the first ? or #
-      const route = window.location.hash.slice(1)
+      const route = hash.slice(1)
       const end = route.search(/[?#]/)
-      const pathname = end === -1 ? route : route.slice(0, end)
-      return parseEmbedUrl(embedPrefix, pathname, route.slice(pathname.length))
+      const routePath = end === -1 ? route : route.slice(0, end)
+      return parseEmbedUrl(
+        embedPrefix,
+        routePath,
+        route.slice(routePath.length)
+      )
     }
-    const { pathname, search, hash } = window.location
     return parseEmbedUrl(embedPrefix, pathname, search, hash)
   }
+  const location = (): EmbedLocation | null => locate(window.location)
 
   // Known once the host spoke, or given
   let origin: string | null = null
@@ -187,6 +201,20 @@ export function connectToTwakeSpace(
     } finally {
       suppressed -= 1
     }
+  }
+
+  // Below the embed route shown, on this origin. Anything goes while
+  // TwakeSpace moves the frame, and off the route (the silent login).
+  const staysInFrame = (url: URL): boolean => {
+    const here = location()
+    if (suppressed > 0 || here === null) return true
+    const { origin: frameOrigin, pathname, search } = window.location
+    if (url.origin !== frameOrigin) return false
+    // With a hash router, another document of the origin is another page
+    if (hashRouting && (url.pathname !== pathname || url.search !== search))
+      return false
+    const there = locate(url)
+    return there?.resourceId === here.resourceId && isBelow(there.path)
   }
 
   // Every message of the parent tells where the host is; the first one, or
@@ -242,11 +270,15 @@ export function connectToTwakeSpace(
       reportCurrent(true)
     }
 
+    // After the boot, so the silent login's redirects went through
+    const unguard = guardLinks(staysInFrame, options.navigation)
+
     // The first URL came from no history call
     reportCurrent(true)
     askForGreeting()
 
     stop = (): void => {
+      unguard()
       // Own properties shadow the ones of History: dropping them restores it
       if (owned.pushState) history.pushState = pushState
       else Reflect.deleteProperty(history, 'pushState')

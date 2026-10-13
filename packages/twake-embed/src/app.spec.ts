@@ -447,3 +447,176 @@ describe('connectToTwakeSpace', () => {
     expect(onLoad).toHaveBeenCalledWith('p7', '')
   })
 })
+
+describe('links leaving the frame', () => {
+  let space: TwakeSpaceConnection | null = null
+  let navigation: EventTarget
+  let open: Mock
+  // Whether a click got past the guard with its default left
+  let passedGuard: boolean[]
+  const keepJsdomInPlace = (event: Event): void => {
+    passedGuard.push(!event.defaultPrevented)
+    event.preventDefault()
+  }
+
+  beforeEach(() => {
+    navigation = new EventTarget()
+    open = vi.fn()
+    vi.stubGlobal('open', open)
+    passedGuard = []
+  })
+  afterEach(() => {
+    space?.disconnect()
+    space = null
+    vi.unstubAllGlobals()
+    window.removeEventListener('click', keepJsdomInPlace)
+    document.body.replaceChildren()
+  })
+
+  function sync(pathname: string, hashRouting = false): void {
+    window.history.replaceState(null, '', pathname)
+    space = connectToTwakeSpace({
+      embedPrefix: PREFIX,
+      parent: fakeParent(),
+      navigation,
+      hashRouting
+    })
+    space?.syncHistory({ onLoad: vi.fn(), onNavigate: vi.fn() })
+    // After the guard's listener
+    window.addEventListener('click', keepJsdomInPlace)
+  }
+
+  function click(href: string, attributes: Record<string, string> = {}): void {
+    const link = document.createElement('a')
+    link.href = href
+    for (const [name, value] of Object.entries(attributes))
+      link.setAttribute(name, value)
+    document.body.append(link)
+    link.click()
+  }
+
+  function navigate(
+    url: string,
+    init: { navigationType?: string; downloadRequest?: string } = {}
+  ): Event {
+    const event = Object.assign(new Event('navigate', { cancelable: true }), {
+      navigationType: 'push',
+      destination: { url: new URL(url, window.location.href).href },
+      downloadRequest: null,
+      formData: null,
+      ...init
+    })
+    navigation.dispatchEvent(event)
+    return event
+  }
+
+  it('leaves a link below the embed route to the app', () => {
+    sync('/embed/projects/p1')
+    click('/embed/projects/p1/boards/b1?task=T-1')
+    click('#comments')
+    expect(passedGuard).toEqual([true, true])
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it('opens in a new tab a link to another origin, resource or page', () => {
+    sync('/embed/projects/p1')
+    click('https://notes.test/n/1')
+    click('/embed/projects/p2')
+    click('/settings')
+    click('/embed/projects/p1//evil.test')
+    expect(passedGuard).toEqual([false, false, false, false])
+    expect(open.mock.calls).toEqual([
+      ['https://notes.test/n/1', '_blank', 'noopener'],
+      [
+        new URL('/embed/projects/p2', window.location.href).href,
+        '_blank',
+        'noopener'
+      ],
+      [new URL('/settings', window.location.href).href, '_blank', 'noopener'],
+      [
+        new URL('/embed/projects/p1//evil.test', window.location.href).href,
+        '_blank',
+        'noopener'
+      ]
+    ])
+  })
+
+  it('leaves a new tab, a download or a modified click to the browser', () => {
+    sync('/embed/projects/p1')
+    click('https://notes.test/n/1', { target: '_blank' })
+    click('https://notes.test/n/1', { download: '' })
+    const link = document.createElement('a')
+    link.href = 'https://notes.test/n/1'
+    document.body.append(link)
+    link.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        metaKey: true
+      })
+    )
+    expect(passedGuard).toEqual([true, true, true])
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it('leaves to the app a link it handles itself', () => {
+    sync('/embed/projects/p1')
+    const select = (event: Event): void => {
+      event.preventDefault()
+    }
+    document.addEventListener('click', select)
+    click('https://notes.test/n/1')
+    document.removeEventListener('click', select)
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it('opens in a new tab any other navigation leaving the route', () => {
+    sync('/embed/projects/p1')
+    expect(navigate('/embed/projects/p1/inbox').defaultPrevented).toBe(false)
+    expect(navigate('https://notes.test/n/1').defaultPrevented).toBe(true)
+    expect(
+      navigate('https://notes.test/n/1', { navigationType: 'reload' })
+        .defaultPrevented
+    ).toBe(false)
+    expect(
+      navigate('https://files.test/a.pdf', { downloadRequest: 'a.pdf' })
+        .defaultPrevented
+    ).toBe(false)
+    expect(open.mock.calls).toEqual([
+      ['https://notes.test/n/1', '_blank', 'noopener']
+    ])
+  })
+
+  it('reads the route from the hash for a hash router', () => {
+    sync('/#/embed/projects/p1', true)
+    click('#/embed/projects/p1/folder/f1')
+    click('#/note/n1')
+    click('/intents#/embed/projects/p1')
+    expect(passedGuard).toEqual([true, false, false])
+    expect(open).toHaveBeenCalledTimes(2)
+  })
+
+  it('lets TwakeSpace move the frame, and stops with the sync', async () => {
+    window.history.replaceState(null, '', '/embed/projects/p1')
+    const parent = fakeParent()
+    space = connectToTwakeSpace({ embedPrefix: PREFIX, parent, navigation })
+    if (!space) throw new Error('not connected')
+    // Nothing guarded before the sync: the silent login redirects freely
+    expect(navigate('https://sso.test/').defaultPrevented).toBe(false)
+
+    const moved: Event[] = []
+    const stop = space.syncHistory({
+      onLoad: () => {
+        moved.push(navigate('/embed/projects/p2'))
+      },
+      onNavigate: vi.fn()
+    })
+    fromHost(parent, { type: 'twake-embed:load', resourceId: 'p2', path: '' })
+    await Promise.resolve()
+    expect(moved.map(event => event.defaultPrevented)).toEqual([false])
+
+    stop()
+    expect(navigate('https://notes.test/n/1').defaultPrevented).toBe(false)
+    expect(open).not.toHaveBeenCalled()
+  })
+})
