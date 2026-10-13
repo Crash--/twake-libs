@@ -32,6 +32,14 @@ export function getAccessToken(): string | undefined {
   return tokenSet?.access_token
 }
 
+/**
+ * The ID token of the session: the logout hands it to the SSO
+ * (`id_token_hint`), and other Twake apps exchange it for their own tokens
+ */
+export function getIdToken(): string | undefined {
+  return tokenSet?.id_token
+}
+
 export function clearTokenSet(): void {
   tokenSet = null
 }

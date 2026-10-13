@@ -49,10 +49,11 @@ Sign in:
 - `startLogin()` sends the user to the SSO.
 - `completeLogin()`, on the redirect URI page, exchanges the code for the tokens and resolves to `{ tokenSet, userinfo, returnTo }`, or `null` when no sign-in is pending. `returnTo` is the path the user was on when the sign-in started.
 - `getAccessToken()` tells whether this tab holds a session.
+- `getIdToken()` gives the ID token of the session, e.g. for the token exchanges of other Twake apps.
 
 Sign out:
 
-- `logOut()` drops the tokens here and in the other tabs, then goes to the SSO logout.
+- `logOut()` drops the tokens here and in the other tabs, then goes to the SSO logout. It hands the ID token of the session to the SSO as `id_token_hint`: LemonLDAP::NG then skips its confirmation page for a client with "Bypass logout confirmation" set (`oidcRPMetaDataOptionsLogoutBypassConfirm`), when the token belongs to the current SSO session (same `sub` and `sid`). Without an ID token, as in a tab whose session ended elsewhere, the SSO asks the user to confirm. The hint is a query parameter of the logout URL, so the ID token lands in the browser history and in the access logs of the SSO and of the proxies in front of it.
 - `onSessionEndedElsewhere(callback)` calls back when another tab signs out.
 
 The tokens are kept in memory only, never in web storage: a reload signs in again through the SSO, silently while the SSO session lasts.

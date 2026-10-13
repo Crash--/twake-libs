@@ -102,6 +102,31 @@ describe('OIDC Session & Logout', () => {
       )
     })
 
+    it('hands the ID token of the session to the SSO as id_token_hint', async () => {
+      setTokenSet({ access_token: 'active-token', id_token: 'id-token' })
+
+      await logOut()
+
+      expect(client.buildEndSessionUrl).toHaveBeenCalledWith(
+        {},
+        {
+          post_logout_redirect_uri: 'http://localhost:8099/',
+          id_token_hint: 'id-token'
+        }
+      )
+    })
+
+    it('sends no id_token_hint when this tab holds no ID token', async () => {
+      setTokenSet({ access_token: 'active-token' })
+
+      await logOut()
+
+      expect(client.buildEndSessionUrl).toHaveBeenCalledWith(
+        {},
+        { post_logout_redirect_uri: 'http://localhost:8099/' }
+      )
+    })
+
     it('clears session and falls back to "/" when OIDC discovery fails', async () => {
       const consoleErrorSpy = vi
         .spyOn(console, 'error')

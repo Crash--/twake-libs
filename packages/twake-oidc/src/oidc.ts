@@ -1,6 +1,11 @@
 import * as client from 'openid-client'
 
-import { endLocalSession, setTokenSet, type TokenSet } from './session'
+import {
+  endLocalSession,
+  getIdToken,
+  setTokenSet,
+  type TokenSet
+} from './session'
 
 export interface AuthConfig {
   /** Issuer URL of the SSO, where its OIDC discovery document lives */
@@ -205,10 +210,12 @@ export async function completeLogin(): Promise<LoginResult | null> {
  * Ends the session here and on the SSO, then leaves the application.
  */
 export async function logOut(): Promise<void> {
+  const idToken = getIdToken()
   try {
     const configuration = await discover()
     const endSessionUrl = client.buildEndSessionUrl(configuration, {
-      post_logout_redirect_uri: getAuthConfig().postLogoutRedirectUri
+      post_logout_redirect_uri: getAuthConfig().postLogoutRedirectUri,
+      ...(idToken && { id_token_hint: idToken })
     })
 
     endLocalSession()

@@ -11,6 +11,7 @@ export {
 export {
   setTokenSet,
   getAccessToken,
+  getIdToken,
   clearTokenSet,
   endLocalSession,
   onSessionEndedElsewhere,
