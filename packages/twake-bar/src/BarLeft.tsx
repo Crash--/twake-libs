@@ -38,12 +38,15 @@ const HomeLink = styled('a')(({ theme }) => ({
 }))
 
 const HomeIcon = styled('img')({ width: 32, height: 32 })
-const AppIcon = styled('img')({
+// On mobile the bar has no left padding: the app icon, shown off the
+// platform in place of the home button, keeps the same 8px from the edge
+const AppIcon = styled('img')(({ theme }) => ({
   width: 32,
   height: 32,
   flexShrink: 0,
-  marginRight: 4
-})
+  marginRight: 4,
+  [theme.breakpoints.down('md')]: { marginLeft: 8 }
+}))
 // Black on light, white on dark, like the twake-mui AppTitle
 const Wordmark = styled(TwakeText)(({ theme }) => ({
   height: 22,
