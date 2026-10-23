@@ -1,6 +1,8 @@
+import type { IncomingHttpHeaders, IncomingMessage } from 'node:http'
+
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { createLogger, hashEmail } from './index'
+import { createLogger, genReqId, hashEmail } from './index'
 
 function logLine(
   log: (logger: ReturnType<typeof createLogger>) => void
@@ -82,6 +84,23 @@ describe('createLogger', () => {
     expect(createLogger({ service: 's' }).level).toBe('debug')
     vi.stubEnv('LOG_LEVEL', '')
     expect(createLogger({ service: 's' }).level).toBe('info')
+  })
+})
+
+describe('genReqId', () => {
+  const requestWith = (headers: IncomingHttpHeaders): IncomingMessage =>
+    ({ headers }) as IncomingMessage
+
+  it('keeps the X-Request-Id of the caller', () => {
+    expect(genReqId(requestWith({ 'x-request-id': 'abc-123' }))).toBe('abc-123')
+  })
+
+  it.each([
+    ['no header', {}],
+    ['a line break', { 'x-request-id': 'abc\ninjected' }],
+    ['a long header', { 'x-request-id': 'a'.repeat(129) }]
+  ])('makes a new id when the request has %s', (_, headers) => {
+    expect(genReqId(requestWith(headers))).toMatch(/^[0-9a-f-]{36}$/)
   })
 })
 

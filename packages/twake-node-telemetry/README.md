@@ -28,6 +28,15 @@ The level comes from `level`, then `LOG_LEVEL`, then `info`. Each line is JSON:
 
 The values of `authorization` (or `Authorization`), `cookie`, `access_token`, `openid_token`, `password` and `email` become `[Redacted]`, up to four levels deep (`err.config.headers.Authorization`). To follow a user across lines without logging the address, log `hashEmail(email)`.
 
+Give Fastify the logger and `genReqId`: each request log carries a `reqId`, the `X-Request-Id` of the caller when it is a short id of safe characters, a new UUID otherwise.
+
+```ts
+import Fastify from 'fastify'
+import { genReqId } from '@linagora/twake-node-telemetry'
+
+const app = Fastify({ loggerInstance: logger, genReqId })
+```
+
 ## Sentry
 
 Start Sentry from its own file, loaded with `node --import ./dist/instrument.js dist/main.js`, so Sentry can instrument the modules `main.ts` loads (http, Fastify, postgres). Its entry point does not load pino or anything else.
