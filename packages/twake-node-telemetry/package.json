@@ -17,6 +17,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./sentry": {
+      "types": "./dist/sentry.d.ts",
+      "import": "./dist/sentry.js"
     }
   },
   "main": "dist/index.js",
@@ -38,9 +42,11 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "pino": "^9.0.0 || ^10.0.0"
+    "@sentry/node": "^10.75.0 || ^11.0.0",
+    "pino": "^9.10.0 || ^10.0.0"
   },
   "devDependencies": {
+    "@sentry/node": "^11.8.0",
     "@types/node": "^24.19.2",
     "cozy-tsconfig": "^2.0.0",
     "eslint": "10.2.1",

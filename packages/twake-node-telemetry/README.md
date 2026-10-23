@@ -9,7 +9,7 @@ You need to use Node 24+
 ## Installation
 
 ```bash
-npm install @linagora/twake-node-telemetry pino
+npm install @linagora/twake-node-telemetry pino @sentry/node
 ```
 
 ## Logs
@@ -27,3 +27,21 @@ The level comes from `level`, then `LOG_LEVEL`, then `info`. Each line is JSON:
 ```
 
 The values of `authorization` (or `Authorization`), `cookie`, `access_token`, `openid_token`, `password` and `email` become `[Redacted]`, up to four levels deep (`err.config.headers.Authorization`). To follow a user across lines without logging the address, log `hashEmail(email)`.
+
+## Sentry
+
+Start Sentry from its own file, loaded with `node --import ./dist/instrument.js dist/main.js`, so Sentry can instrument the modules `main.ts` loads (http, Fastify, postgres). Its entry point does not load pino or anything else.
+
+```ts
+// src/instrument.ts
+import { readFileSync } from 'node:fs'
+import { initSentry } from '@linagora/twake-node-telemetry/sentry'
+
+const { version } = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+) as { version: string }
+
+initSentry({ service: 'meet-side-service', version })
+```
+
+Sentry reads `SENTRY_DSN` and `SENTRY_ENVIRONMENT`, and sends nothing without a DSN. Events carry the release `<service>@<version>` and a `service` tag. Logs at `error` and `fatal` become Sentry errors, the other lines stay out of Sentry, and an unhandled promise rejection stops the process, as Node does without Sentry.
