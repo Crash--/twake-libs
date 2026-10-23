@@ -10,6 +10,7 @@ twake-libs/
 │   ├── twake-e2e/          # Fake SSO and sign-in helpers for end-to-end suites
 │   ├── twake-feedback/     # Draggable feedback button and Sentry feedback wiring
 │   ├── twake-node-server/  # HTTP server, shutdown and Postgres for Node backends
+│   ├── twake-node-telemetry/ # Logs and Sentry for Node backends
 │   ├── twake-oidc/         # SSO sign-in and session
 │   ├── twake-utils/        # Shared utils
 │   └── ...                 # Other packages (to be added)
