@@ -1,3 +1,4 @@
+import { createRemoteJWKSet, jwtVerify } from 'jose'
 import * as client from 'openid-client'
 import { z } from 'zod'
 
@@ -19,6 +20,8 @@ export interface Identity {
 
 export interface IdentityProvider {
   identify: (accessToken: string) => Promise<Identity | null>
+  // Resolves to the session id the token ends, rejects a token that is not one.
+  verifyLogoutToken: (logoutToken: string) => Promise<string>
 }
 
 export interface OidcOptions {
@@ -28,6 +31,9 @@ export interface OidcOptions {
   // The `aud` an access token must carry to be accepted here.
   audience: string
 }
+
+const BACKCHANNEL_LOGOUT_EVENT =
+  'http://schemas.openid.net/event/backchannel-logout'
 
 const userinfoSchema = z.object({
   sub: z.string().min(1),
@@ -92,6 +98,7 @@ export async function discoverIdentityProvider(
   if (!metadata.jwks_uri) {
     throw new Error(`${metadata.issuer} publishes no jwks_uri`)
   }
+  const jwks = createRemoteJWKSet(new URL(metadata.jwks_uri))
 
   return {
     async identify(accessToken): Promise<Identity | null> {
@@ -136,6 +143,25 @@ export async function discoverIdentityProvider(
         organizationId: claims.org_id ?? null,
         organizationRole: claims.org_role ?? null
       }
+    },
+
+    async verifyLogoutToken(logoutToken): Promise<string> {
+      const { payload } = await jwtVerify(logoutToken, jwks, {
+        issuer: metadata.issuer,
+        audience: options.audience,
+        requiredClaims: ['iat', 'sid', 'events']
+      })
+      const events = z.record(z.string(), z.unknown()).safeParse(payload.events)
+      if (
+        !events.success ||
+        typeof events.data[BACKCHANNEL_LOGOUT_EVENT] !== 'object' ||
+        events.data[BACKCHANNEL_LOGOUT_EVENT] === null ||
+        'nonce' in payload ||
+        typeof payload.sid !== 'string'
+      ) {
+        throw new Error('not a back-channel logout token')
+      }
+      return payload.sid
     }
   }
 }

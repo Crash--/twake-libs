@@ -1,9 +1,11 @@
-import { exportJWK, generateKeyPair } from 'jose'
+import { exportJWK, generateKeyPair, SignJWT, type CryptoKey } from 'jose'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { discoverIdentityProvider, type IdentityProvider } from './provider.js'
 
 const ISSUER = 'https://sso.test/'
+const BACKCHANNEL_LOGOUT_EVENT =
+  'http://schemas.openid.net/event/backchannel-logout'
 
 interface FakeToken {
   introspection: Record<string, unknown>
@@ -103,11 +105,15 @@ function validToken(): FakeToken {
   }
 }
 
+let signingKey: CryptoKey
+let otherKey: CryptoKey
 let publicJwk: Record<string, unknown>
 
 beforeAll(async () => {
   const pair = await generateKeyPair('RS256')
+  signingKey = pair.privateKey
   publicJwk = { ...(await exportJWK(pair.publicKey)), kid: 'k1', alg: 'RS256' }
+  otherKey = (await generateKeyPair('RS256')).privateKey
 })
 
 afterEach(() => {
@@ -126,6 +132,23 @@ async function setUp(
     audience: 'twake-tasks'
   })
   return { provider, sso }
+}
+
+function logoutToken(
+  claims: Record<string, unknown> = {},
+  options: { key?: CryptoKey; audience?: string } = {}
+): Promise<string> {
+  return new SignJWT({
+    sid: 'session-1',
+    events: { [BACKCHANNEL_LOGOUT_EVENT]: {} },
+    ...claims
+  })
+    .setProtectedHeader({ alg: 'RS256', kid: 'k1', typ: 'logout+jwt' })
+    .setIssuer(ISSUER)
+    .setAudience(options.audience ?? 'twake-tasks')
+    .setIssuedAt()
+    .setJti(crypto.randomUUID())
+    .sign(options.key ?? signingKey)
 }
 
 describe('identify', () => {
@@ -227,5 +250,32 @@ describe('identify', () => {
     sso.failIntrospection()
 
     await expect(provider.identify('good')).rejects.toThrow()
+  })
+})
+
+describe('verifyLogoutToken', () => {
+  it('returns the sid of a valid logout token', async () => {
+    const { provider } = await setUp()
+
+    await expect(provider.verifyLogoutToken(await logoutToken())).resolves.toBe(
+      'session-1'
+    )
+  })
+
+  it.each([
+    ['signed by another key', {}, { other: true }],
+    ['for another audience', {}, { audience: 'tmail' }],
+    ['without events', { events: undefined }, {}],
+    ['with another event', { events: { other: {} } }, {}],
+    ['without sid', { sid: undefined }, {}],
+    ['with a nonce', { nonce: 'n' }, {}]
+  ])('refuses a token %s', async (_case, claims, options) => {
+    const { provider } = await setUp()
+    const token = await logoutToken(claims, {
+      key: 'other' in options ? otherKey : undefined,
+      audience: 'audience' in options ? options.audience : undefined
+    })
+
+    await expect(provider.verifyLogoutToken(token)).rejects.toThrow()
   })
 })
