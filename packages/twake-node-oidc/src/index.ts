@@ -1,4 +1,10 @@
 export {
+  createAuthenticator,
+  TooManyNewTokensError,
+  type Authenticate,
+  type AuthenticatorOptions
+} from './authenticator.js'
+export {
   discoverIdentityProvider,
   type Identity,
   type IdentityProvider,
