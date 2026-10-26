@@ -77,10 +77,10 @@ function hasAudience(
   return Array.isArray(aud) ? aud.includes(audience) : aud === audience
 }
 
-export async function discoverIdentityProvider(
-  options: OidcOptions
-): Promise<IdentityProvider> {
-  const config = await client.discovery(
+export function discover(
+  options: Pick<OidcOptions, 'issuer' | 'clientId' | 'clientSecret'>
+): Promise<client.Configuration> {
+  return client.discovery(
     options.issuer,
     options.clientId,
     undefined,
@@ -94,6 +94,12 @@ export async function discoverIdentityProvider(
           : []
     }
   )
+}
+
+export async function discoverIdentityProvider(
+  options: OidcOptions
+): Promise<IdentityProvider> {
+  const config = await discover(options)
   const metadata = config.serverMetadata()
   if (!metadata.jwks_uri) {
     throw new Error(`${metadata.issuer} publishes no jwks_uri`)

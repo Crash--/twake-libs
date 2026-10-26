@@ -23,6 +23,11 @@ export {
   type OidcOptions,
   type OrganizationRole
 } from './provider.js'
+export {
+  discoverServiceToken,
+  type ServiceToken,
+  type ServiceTokenOptions
+} from './serviceToken.js'
 export { memoryAuthStore, type AuthStore } from './store.js'
 
 export interface Oidc {

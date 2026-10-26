@@ -1,6 +1,6 @@
 # twake-node-oidc
 
-Checks the SSO access tokens a Twake Node backend receives, and ends sessions on the SSO's back-channel logout.
+Checks the SSO access tokens a Twake Node backend receives, ends sessions on the SSO's back-channel logout, and gets the backend's own access token (client credentials) to call other services.
 
 ## Requirements
 
@@ -74,6 +74,29 @@ Where revocations live:
 - `drizzleAuthStore(db)` keeps them in the `oidc_revoked_sessions` table, so every replica sees them. Export `oidcRevokedSessions` from the service's drizzle schema so its migrations create the table.
 - `memoryAuthStore()` keeps them in the process, for a single replica or tests.
 - Anything implementing `AuthStore` (`isRevoked`, `revoke`) works too.
+
+## Service token
+
+`discoverServiceToken` gets an access token for the backend's own SSO client (client credentials), to call another service as itself:
+
+```ts
+import { discoverServiceToken } from "@linagora/twake-node-oidc";
+
+const serviceToken = await discoverServiceToken({
+  issuer: new URL(process.env.OIDC_ISSUER),
+  clientId: "twake-chat-side-service",
+  clientSecret: process.env.OIDC_CLIENT_SECRET,
+  scope: "openid", // LemonLDAP refuses a client credentials request without one
+});
+
+const authorization = `Bearer ${await serviceToken.getToken()}`;
+```
+
+- A token is kept until 30 seconds before it expires, or for half its life when it lives less than a minute. Without `expires_in`, it counts as a 60 second token.
+- Calls made while a token is being requested share that request.
+- `forget(token)` drops a token the called service refused, so the next `getToken()` asks for a new one. A token that replaced it meanwhile is kept.
+- An answer without `access_token` rejects with an error naming the field.
+- The client id and secret go in a raw Basic header, as LemonLDAP before 2.23 expects. From 2.23, which URL-decodes them, a `%` in either is misread.
 
 ## Tests
 
