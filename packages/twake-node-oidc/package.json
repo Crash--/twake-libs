@@ -2,7 +2,7 @@
   "name": "@linagora/twake-node-oidc",
   "type": "module",
   "version": "0.0.0",
-  "description": "OIDC access tokens and back-channel logout for Twake Node backends",
+  "description": "OIDC access tokens, back-channel logout and service tokens for Twake Node backends",
   "author": "Twake",
   "license": "MIT",
   "engines": {
