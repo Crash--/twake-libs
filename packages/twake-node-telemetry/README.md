@@ -53,4 +53,4 @@ const { version } = JSON.parse(
 initSentry({ service: 'meet-side-service', version })
 ```
 
-Sentry reads `SENTRY_DSN` and `SENTRY_ENVIRONMENT`, and sends nothing without a DSN. Events carry the release `<service>@<version>` and a `service` tag. They leave out user details, cookies, HTTP headers and bodies, query strings, database query parameters, and AI prompts and answers. Logs at `error` and `fatal` become Sentry errors, the other lines stay out of Sentry, and an unhandled promise rejection stops the process, as Node does without Sentry.
+Sentry reads `SENTRY_DSN` and `SENTRY_ENVIRONMENT`, and sends nothing without a DSN. Events carry the release `<service>@<version>` and a `service` tag. Logs at `error` and `fatal` become Sentry errors, the other lines stay out of Sentry, and an unhandled promise rejection stops the process, as Node does without Sentry.

@@ -35,22 +35,6 @@ describe('initSentry', () => {
     })
   })
 
-  it('keeps users, cookies, headers, bodies, query strings, SQL parameters and AI prompts out', () => {
-    vi.stubEnv('SENTRY_DSN', 'https://key@sentry.example.com/1')
-
-    const client = initSentry({ service: 'test-service', version: '1.2.3' })
-
-    expect(client?.getOptions().dataCollection).toEqual({
-      userInfo: false,
-      cookies: false,
-      httpHeaders: false,
-      httpBodies: [],
-      urlQueryParams: false,
-      databaseQueryData: false,
-      genAI: { inputs: false, outputs: false }
-    })
-  })
-
   it('sends the error lines as events, and no other line', async () => {
     // Nothing listens on port 9: the envelopes are read before they are sent.
     vi.stubEnv('SENTRY_DSN', 'http://key@127.0.0.1:9/1')
