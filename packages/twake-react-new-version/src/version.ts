@@ -9,25 +9,61 @@ export const requestVersionCheck = (): void => {
   window.dispatchEvent(new Event(CHECK_VERSION_EVENT))
 }
 
+/** What `/version.json` says: the build id and, optionally, patch notes by language */
+export interface ServedVersion {
+  build: string
+  /** Notes by language code, null when absent or without a usable entry */
+  notes: Record<string, string> | null
+}
+
+const usableNotes = (value: unknown): Record<string, string> | null => {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return null
+  }
+  const entries = Object.entries(value).filter(
+    (entry): entry is [string, string] =>
+      typeof entry[1] === 'string' && entry[1] !== ''
+  )
+  return entries.length > 0 ? Object.fromEntries(entries) : null
+}
+
 /**
- * The id of the build the server serves now, read in `{ "build": "…" }`.
- * Null when it cannot tell: an error, the network, or a page that is not that
- * JSON (a dev server answers index.html for any path)
+ * Reads `{ "build": "…", "notes": { "en": "…" } }` at `url`. Null when it
+ * cannot tell: an error, the network, or a page that is not that JSON (a dev
+ * server answers index.html for any path). Unusable notes are dropped, the
+ * build is kept
  */
-export const fetchServedBuild = async (
+export const fetchServedVersion = async (
   url = '/version.json',
   fetchFn: typeof fetch = fetch
-): Promise<string | null> => {
+): Promise<ServedVersion | null> => {
   try {
     const response = await fetchFn(url, { cache: 'no-store' })
     if (!response.ok) return null
-    const body: unknown = await response.json()
-    const build = (body as { build?: unknown } | null)?.build
-    return typeof build === 'string' && build !== '' ? build : null
+    const body = (await response.json()) as {
+      build?: unknown
+      notes?: unknown
+    } | null
+    const build = body?.build
+    if (typeof build !== 'string' || build === '') return null
+    return { build, notes: usableNotes(body?.notes) }
   } catch {
     return null
   }
 }
+
+/** The id of the build the server serves now, null when it cannot tell */
+export const fetchServedBuild = async (
+  url = '/version.json',
+  fetchFn: typeof fetch = fetch
+): Promise<string | null> =>
+  (await fetchServedVersion(url, fetchFn))?.build ?? null
+
+/** The notes in `lang`, else in English, else null */
+export const notesFor = (
+  notes: Record<string, string> | null,
+  lang: string
+): string | null => notes?.[lang] ?? notes?.en ?? null
 
 /** True when the server serves a build other than the one running here */
 export const isNewBuild = (

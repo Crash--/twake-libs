@@ -5,6 +5,9 @@ export {
 export {
   CHECK_VERSION_EVENT,
   fetchServedBuild,
+  fetchServedVersion,
   isNewBuild,
-  requestVersionCheck
+  notesFor,
+  requestVersionCheck,
+  type ServedVersion
 } from './version'

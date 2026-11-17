@@ -19,7 +19,8 @@ npm install @linagora/twake-react-new-version
 Each build has its own id (the commit in CI, for instance). The app:
 
 - writes it in the bundle, so the running tab knows its own build;
-- serves it at `/version.json` as `{ "build": "<id>" }`, with `Cache-Control: no-store`.
+- serves it at `/version.json` as `{ "build": "<id>" }`, with `Cache-Control: no-store`;
+- optionally adds patch notes: `{ "build": "<id>", "notes": { "en": "- Faster search\n- Dark mode", "fr": "…" } }`, one text per language code. Entries that are not non-empty strings are ignored, and `notes` is ignored when it is not an object or has no usable entry.
 
 The id must be in the bundle, not read at runtime from a file served next to it: during a rollout a tab may get the bundle of the old server and that file from the new one, and would never be offered a reload.
 
@@ -54,13 +55,17 @@ Every 10 minutes, when the tab gets the focus, becomes visible again or comes ba
 
 ### What the user sees
 
-A dialog titled « What's new in <appName> », with the text « An update just arrived. Reload to get it. », centred, and « Not now » and « Reload » side by side, centred. With `image`, a banner above the title shows the illustration. « Not now », Escape or a click outside decline that build for the life of the tab: the dialog comes back only for a build not declined yet, so a rollback to a declined build is not offered again.
+A dialog titled « What's new in <appName> », with the text « An update just arrived. Reload to get it. », centred, and « Not now » (a text button) and « Reload » side by side, centred. With `image`, a banner above the title shows the illustration. « Not now », Escape or a click outside decline that build for the life of the tab: the dialog comes back only for a build not declined yet, so a rollback to a declined build is not offered again.
+
+### Patch notes
+
+When `/version.json` has notes for the app language (else `en`), the dialog shows them instead of the usual text. Consecutive lines starting with `- ` are drawn as a list, any other line as text. The zone scrolls (`max-height` 60vh, `overflow-y: auto`) when the notes are long. Without usable notes, the usual text shows.
 
 ### Props
 
 - `running`: the build id of this bundle
 - `appName`: the name shown in the text, such as `Twake Mail`
-- `fetchServed()`: reads the served build id, `fetchServedBuild` by default
+- `fetchServed()`: reads the served version, `fetchServedVersion` by default. It may answer a `ServedVersion` (`{ build, notes }`), a bare build id string (no notes) or null
 - `reload()`: `window.location.reload` by default
 - `intervalMs`: time between two checks, 10 minutes by default
 - `image`: URL of a decorative illustration (`alt=""`), drawn centred in a full-width banner about 130 px high at the top of the dialog, `object-fit: contain`, cut at the bottom of the banner if taller; no banner without it
@@ -72,4 +77,4 @@ A dialog titled « What's new in <appName> », with the text « An update just a
 
 ### Detection alone
 
-`fetchServedBuild(url = '/version.json')` and `isNewBuild(running, served)` are exported for an app that wants another surface than the dialog.
+`fetchServedVersion(url = '/version.json')` (`{ build, notes } | null`, notes null when absent or unusable), `fetchServedBuild(url = '/version.json')` (the build id only), `notesFor(notes, lang)` (the notes in `lang`, else `en`, else null) and `isNewBuild(running, served)` are exported, with the `ServedVersion` type, for an app that wants another surface than the dialog.

@@ -11,6 +11,7 @@ import {
 } from '@linagora/twake-mui'
 import { useExtendI18n, useI18n } from 'twake-i18n'
 
+import { PatchNotes } from './PatchNotes'
 import de from './locales/de.json'
 import en from './locales/en.json'
 import es from './locales/es.json'
@@ -18,7 +19,13 @@ import fr from './locales/fr.json'
 import it from './locales/it.json'
 import ru from './locales/ru.json'
 import vi from './locales/vi.json'
-import { CHECK_VERSION_EVENT, fetchServedBuild, isNewBuild } from './version'
+import {
+  CHECK_VERSION_EVENT,
+  fetchServedVersion,
+  isNewBuild,
+  notesFor,
+  type ServedVersion
+} from './version'
 
 const locales: Record<string, typeof en> = { de, en, es, fr, it, ru, vi }
 
@@ -30,7 +37,8 @@ export interface NewVersionDialogProps {
   running: string
   /** The name shown in the text, such as `Twake Mail` */
   appName: string
-  fetchServed?: () => Promise<string | null>
+  /** Reads the served version; a bare string is a build without notes. `fetchServedVersion` by default */
+  fetchServed?: () => Promise<string | ServedVersion | null>
   reload?: () => void
   intervalMs?: number
   /** URL of a decorative illustration, drawn in a banner at the top */
@@ -147,7 +155,7 @@ const Banner = ({
 export const NewVersionDialog = ({
   running,
   appName,
-  fetchServed = fetchServedBuild,
+  fetchServed = fetchServedVersion,
   reload = (): void => window.location.reload(),
   intervalMs = 10 * MINUTE,
   image,
@@ -156,20 +164,28 @@ export const NewVersionDialog = ({
   const { t, lang } = useI18n()
   useExtendI18n({ [lang]: locales[lang] ?? locales.en })
   const titleId = useId()
-  const [offered, setOffered] = useState<string | null>(null)
+  const [offered, setOffered] = useState<ServedVersion | null>(null)
   // Read only in events, never drawn: a ref, not state
   const declined = useRef(new Set<string>())
 
   useVersionChecks(async () => {
     if (offered !== null) return
-    const served = await fetchServed().catch(() => null)
-    if (isNewBuild(running, served) && !declined.current.has(served)) {
+    const answer = await fetchServed().catch(() => null)
+    const served =
+      typeof answer === 'string' ? { build: answer, notes: null } : answer
+    if (
+      served !== null &&
+      isNewBuild(running, served.build) &&
+      !declined.current.has(served.build)
+    ) {
       setOffered(served)
     }
   }, intervalMs)
 
+  const notes = notesFor(offered?.notes ?? null, lang)
+
   const notNow = (): void => {
-    if (offered !== null) declined.current.add(offered)
+    if (offered !== null) declined.current.add(offered.build)
     setOffered(null)
   }
 
@@ -188,14 +204,19 @@ export const NewVersionDialog = ({
         {/* The typings of twake-i18n's `t` take no interpolation options */}
         {t('twakeNewVersion.title').replace('%{appName}', appName)}
       </DialogTitle>
-      <DialogContent>
-        <DialogContentText sx={{ textAlign: 'center' }}>
-          {t('twakeNewVersion.body').replace('%{appName}', appName)}
-        </DialogContentText>
+      {/* With notes, PatchNotes is the only scrolling zone */}
+      <DialogContent sx={notes !== null ? { overflowY: 'visible' } : undefined}>
+        {notes !== null ? (
+          <PatchNotes notes={notes} titleId={titleId} />
+        ) : (
+          <DialogContentText sx={{ textAlign: 'center' }}>
+            {t('twakeNewVersion.body').replace('%{appName}', appName)}
+          </DialogContentText>
+        )}
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'center' }}>
         <Button
-          variant="outlined"
+          variant="text"
           data-testid="new-version-not-now"
           onClick={notNow}
         >
