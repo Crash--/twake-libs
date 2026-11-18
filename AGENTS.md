@@ -57,7 +57,7 @@ For each changed package:
 1. Create package in `packages/<name>/`
 2. Required in `package.json`:
    - `"name": "@linagora/<name>"`
-   - `"publishConfig": { "access": "public" }`
+   - `"publishConfig": { "access": "public", "provenance": true }`
    - `"files": ["dist", "CHANGELOG.md", "README.md"]`
 3. No per-package config needed — the root `.releaserc.json` applies to all workspaces
 
@@ -65,7 +65,7 @@ For each changed package:
 
 - **Runs on**: PRs and push to main
 - **Order**: install → lint → test → build → release (main only)
-- **Secrets required**: `NODE_AUTH_TOKEN` (NPM token, set in GitHub repo settings)
+- **npm auth**: OIDC trusted publishing, no npm token. The `release` job runs in the `npm` GitHub environment (main only). A new package must first be published by hand, then get a trusted publisher on npmjs.com: `linagora` / `twake-libs` / `ci-cd.yml` / environment `npm`, with "Allow npm publish" checked
 - **Uses**: `secrets.GITHUB_TOKEN` (auto-provided, no setup needed)
 
 ## Commits
