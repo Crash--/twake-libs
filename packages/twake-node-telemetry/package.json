@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-node-telemetry",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Logs and Sentry for Twake Node backends",
   "author": "Twake",
   "license": "MIT",
