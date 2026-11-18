@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-oidc",
   "type": "module",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "SSO sign-in and session handling for Twake applications",
   "author": "Twake",
   "license": "MIT",
