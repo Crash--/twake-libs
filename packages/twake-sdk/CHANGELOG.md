@@ -1,3 +1,10 @@
+## @linagora/twake-sdk [1.3.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-sdk@1.3.2...@linagora/twake-sdk@1.3.3) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
 ## @linagora/twake-sdk [1.3.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-sdk@1.3.1...@linagora/twake-sdk@1.3.2) (2026-11-12)
 
 
