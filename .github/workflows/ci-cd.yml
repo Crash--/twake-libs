@@ -93,4 +93,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Fallback for packages not yet declared as trusted publishers on npmjs.com
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_IN_VAULT }}
+          # Also read setup-node's .npmrc as global config: `npm publish --userconfig` replaces
+          # the user config only, so the token stays a fallback if npm's own OIDC exchange fails.
+          NPM_CONFIG_GLOBALCONFIG: ${{ runner.temp }}/.npmrc
         run: npm run release
