@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-utils",
   "type": "module",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Utils for Twake applications",
   "author": "Twake",
   "license": "MIT",
