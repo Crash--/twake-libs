@@ -1,3 +1,10 @@
+# @linagora/twake-react-new-version [1.2.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.1.2...@linagora/twake-react-new-version@1.2.0) (2026-11-18)
+
+
+### Features
+
+* **twake-react-new-version:** Show patch notes by language, Not now as a text button ([a805947](https://github.com/linagora/twake-libs/commit/a8059479cb2e14c30227046fb6796f76b2aec6f0))
+
 ## @linagora/twake-react-new-version [1.1.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.1.1...@linagora/twake-react-new-version@1.1.2) (2026-11-18)
 
 
