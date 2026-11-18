@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-e2e",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fake SSO and sign-in helpers for the end-to-end suites of Twake apps",
   "author": "Twake",
   "license": "MIT",
