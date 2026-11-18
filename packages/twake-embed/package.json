@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-embed",
   "type": "module",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "description": "The contract between TwakeSpace and the apps it frames: history, messages, overlay",
   "author": "Twake",
   "license": "MIT",

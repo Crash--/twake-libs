@@ -1,3 +1,10 @@
+## @linagora/twake-embed [3.7.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-embed@3.7.0...@linagora/twake-embed@3.7.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
 # @linagora/twake-embed [3.7.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-embed@3.6.0...@linagora/twake-embed@3.7.0) (2026-10-27)
 
 
