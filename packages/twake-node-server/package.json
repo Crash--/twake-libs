@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-node-server",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTTP server, shutdown and Postgres groundwork for Twake Node backends",
   "author": "Twake",
   "license": "MIT",
