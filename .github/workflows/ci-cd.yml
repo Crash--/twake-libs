@@ -66,6 +66,8 @@ jobs:
     environment: npm
     permissions:
       contents: write
+      issues: write # @semantic-release/github comments on released issues
+      pull-requests: write # @semantic-release/github comments on released PRs
       id-token: write # npm trusted publishing (OIDC)
     steps:
       - name: Checkout
