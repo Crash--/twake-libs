@@ -136,6 +136,39 @@ describe('TwakeBar', () => {
       expect(await screen.findByTestId('twake-bar-logout')).toBeInTheDocument()
     })
 
+    it('shows the account menu of the host in place of its own', () => {
+      renderWithSdk(
+        <TwakeBar
+          app={APP}
+          onLogOut={vi.fn()}
+          fallback={{
+            ...FALLBACK,
+            userMenu: <button type="button">Account of Alice</button>
+          }}
+        />
+      )
+
+      expect(screen.getByTestId('twake-bar-apps-button')).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: 'Account of Alice' }).parentElement
+      ).toBe(screen.getAllByRole('navigation').at(-1))
+      expect(screen.queryByTestId('twake-bar-user-button')).toBe(null)
+    })
+
+    it('shows no account menu when the host gives false', () => {
+      renderWithSdk(
+        <TwakeBar
+          app={APP}
+          onLogOut={vi.fn()}
+          fallback={{ ...FALLBACK, userMenu: false }}
+        />
+      )
+
+      expect(screen.getByTestId('twake-bar-apps-button')).toBeInTheDocument()
+      expect(screen.queryByTestId('twake-bar-user-button')).toBe(null)
+      expect(screen.getAllByRole('navigation')).toHaveLength(1)
+    })
+
     it('replaces the fallbacks by the platform once ready', async () => {
       renderBar(makeSdk({ context: { help_link: 'https://help.example' } }), {
         fallback: FALLBACK
