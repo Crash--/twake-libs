@@ -58,7 +58,7 @@ Without a `SdkProvider`, or with a `public` client (no workplace, token exchange
 />
 ```
 
-Each part is optional. With a `fallback`, the account menu always shows, with the log out. The platform data replaces the fallbacks once the client is `ready`.
+Each part is optional. With a `fallback`, the account menu always shows, with the log out. A host with its own account menu passes it as `userMenu`, shown in place of the one of the bar, in a `nav` like the other menus; `false` shows no account menu, `null` or no value the one of the bar. The accessible name of that menu and of its trigger is up to the host. The platform data replaces the fallbacks once the client is `ready`.
 
 ### Props
 
@@ -66,7 +66,7 @@ Each part is optional. With a `fallback`, the account menu always shows, with th
 - `onLogOut`: called by the log out item, the host ends its SSO session
 - `slots`: `left` replaces the home button and title, `center`, `search` fills the middle, `right` is rendered before the menus
 - `showEmailDomainChip`: warns when the organization has no mail app yet (default `true`)
-- `fallback`: `helpLink`, `apps` and `user` shown off the platform
+- `fallback`: `helpLink`, `apps` and `user` shown off the platform, and `userMenu` to replace the account menu there
 
 ### Hooks
 

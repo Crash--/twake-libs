@@ -29,6 +29,11 @@ export interface TwakeBarFallback {
   helpLink?: string
   apps?: BarFallbackApp[]
   user?: BarFallbackUser
+  /**
+   * The account menu of the host, in place of the one of the bar; `false`
+   * shows none, `null` or `undefined` the one of the bar
+   */
+  userMenu?: React.ReactNode
 }
 
 export interface TwakeBarProps {
@@ -112,7 +117,11 @@ export const TwakeBar = ({
           {fallback.apps && fallback.apps.length > 0 && (
             <FallbackAppsMenu apps={fallback.apps} />
           )}
-          <FallbackUserMenu user={fallback.user} onLogOut={onLogOut} />
+          {fallback.userMenu === undefined || fallback.userMenu === null ? (
+            <FallbackUserMenu user={fallback.user} onLogOut={onLogOut} />
+          ) : (
+            fallback.userMenu !== false && <nav>{fallback.userMenu}</nav>
+          )}
         </Right>
       )}
     </Root>
