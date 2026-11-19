@@ -11,7 +11,9 @@ const SECRET_KEYS = [
   'access_token',
   'openid_token',
   'password',
-  'email'
+  'email',
+  // The mail of the user in the CloudEvents of twake-user-activity
+  'twakeactor'
 ]
 
 // shortcut: secrets deeper than four levels stay visible, walk the whole object once a service logs such payloads.

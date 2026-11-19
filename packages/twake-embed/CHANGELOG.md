@@ -1,3 +1,17 @@
+## @linagora/twake-embed [3.7.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-embed@3.7.0...@linagora/twake-embed@3.7.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+# @linagora/twake-embed [3.7.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-embed@3.6.0...@linagora/twake-embed@3.7.0) (2026-10-27)
+
+
+### Features
+
+* **twake-embed:** Let TwakeSpace send picked files to an app's resource ([b945bab](https://github.com/linagora/twake-libs/commit/b945bab7d470d1813a715194dc3ece915f980dc9))
+
 # @linagora/twake-embed [3.6.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-embed@3.5.0...@linagora/twake-embed@3.6.0) (2026-10-13)
 
 

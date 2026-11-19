@@ -1,3 +1,5 @@
+import React from 'react'
+
 import {
   CloudRainbow,
   FromUser,
@@ -20,8 +22,6 @@ import {
   useBreakpoints
 } from '@linagora/twake-mui'
 import type { Instance, Sdk } from '@linagora/twake-sdk'
-import React from 'react'
-
 import { useI18n } from 'twake-i18n'
 
 import { BarMenu } from './BarMenu'

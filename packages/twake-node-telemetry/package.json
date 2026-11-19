@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-node-telemetry",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "Logs and Sentry for Twake Node backends",
   "author": "Twake",
   "license": "MIT",
@@ -31,14 +31,13 @@
     "CHANGELOG.md"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "tsc -p tsconfig.build.json --watch",
     "test": "vitest run",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
@@ -49,8 +48,6 @@
     "@sentry/node": "^11.8.0",
     "@types/node": "^24.19.2",
     "cozy-tsconfig": "^2.0.0",
-    "eslint": "10.2.1",
-    "eslint-config-cozy-app": "7.0.0",
     "pino": "^10.4.0",
     "vitest": "5.0.1"
   }

@@ -72,6 +72,9 @@ const LOGIN_REQUIRED_ERRORS = new Set([
   'account_selection_required'
 ])
 
+export const isLoginRequired = (error: string | null): boolean =>
+  LOGIN_REQUIRED_ERRORS.has(error ?? '')
+
 /**
  * A silent sign-in was refused: the SSO needs the user, who signs in again
  * where the SSO may show its portal (the page around the frame).
@@ -113,7 +116,7 @@ export const isOnRedirectUri = (): boolean => {
   )
 }
 
-async function discover(): Promise<client.Configuration> {
+export async function discover(): Promise<client.Configuration> {
   const { ssoUrl, clientId } = getAuthConfig()
   const issuer = new URL(ssoUrl)
   return await client.discovery(
@@ -176,32 +179,78 @@ export function getPendingReturnTo(): string | null {
   return readRedirectState()?.returnTo ?? null
 }
 
+// A path starting with // would be a protocol-relative URL to another site.
+export const currentPath = (): string => {
+  const { pathname, search, hash } = window.location
+  return pathname.replace(/^\/+/, '/') + search + hash
+}
+
+export interface Authorization {
+  url: URL
+  codeVerifier: string
+  state: string
+  configuration?: client.Configuration
+}
+
+export async function authorize(silent: boolean): Promise<Authorization> {
+  const { redirectUri, scope } = getAuthConfig()
+  const codeVerifier = client.randomPKCECodeVerifier()
+  const state = buildState()
+  const configuration = await discover()
+  const url = client.buildAuthorizationUrl(configuration, {
+    redirect_uri: redirectUri,
+    scope,
+    code_challenge: await client.calculatePKCECodeChallenge(codeVerifier),
+    code_challenge_method: 'S256',
+    state,
+    ...(silent && { prompt: 'none' })
+  })
+  return { url, codeVerifier, state, configuration }
+}
+
+/**
+ * Trades the code of the SSO's answer for the tokens, which are kept for the
+ * API requests, and reads the user's claims.
+ */
+export async function exchangeCode(
+  answer: URL,
+  { codeVerifier, state, ...discovered }: Omit<Authorization, 'url'>
+): Promise<Omit<LoginResult, 'returnTo'>> {
+  // The token request names the redirect URI the SSO sent the code to, which
+  // is not the page the answer reached when a backend relays it there
+  const callbackUrl = new URL(getAuthConfig().redirectUri, window.location.href)
+  callbackUrl.search = answer.search
+
+  const configuration = discovered.configuration ?? (await discover())
+  const tokenSet = await client.authorizationCodeGrant(
+    configuration,
+    callbackUrl,
+    { pkceCodeVerifier: codeVerifier, expectedState: state }
+  )
+  const sub = tokenSet.claims()?.sub
+  if (!sub) throw new Error('The SSO returned no ID token')
+
+  const userinfo = await client.fetchUserInfo(
+    configuration,
+    tokenSet.access_token,
+    sub
+  )
+  setTokenSet(tokenSet)
+  return { tokenSet, userinfo }
+}
+
 /**
  * Sends the user to the SSO, which sends them back to the redirect URI where
  * completeLogin finishes the sign-in. Framed, the SSO shows nothing.
  */
 export async function startLogin(): Promise<void> {
-  const { redirectUri, scope } = getAuthConfig()
   const silent = isFramed()
-  const code_verifier = client.randomPKCECodeVerifier()
-  const state = buildState()
-  const authorizationUrl = client.buildAuthorizationUrl(await discover(), {
-    redirect_uri: redirectUri,
-    scope,
-    code_challenge: await client.calculatePKCECodeChallenge(code_verifier),
-    code_challenge_method: 'S256',
-    state,
-    ...(silent && { prompt: 'none' })
-  })
-  const { pathname, search, hash } = window.location
+  const { url: authorizationUrl, codeVerifier, state } = await authorize(silent)
   const redirectState: RedirectState = {
-    code_verifier,
+    code_verifier: codeVerifier,
     state,
-    // The redirect URI holds a spent code: coming back there would start over.
-    // A path starting with // would be a protocol-relative URL to another site.
-    returnTo: isOnRedirectUri()
-      ? '/'
-      : pathname.replace(/^\/+/, '/') + search + hash,
+    // The redirect URI holds a spent code: coming back there would start over
+    returnTo: isOnRedirectUri() ? '/' : currentPath(),
     ...(silent && { silent })
   }
   sessionStorage.setItem(REDIRECT_STATE_KEY, JSON.stringify(redirectState))
@@ -222,36 +271,20 @@ export async function completeLogin(): Promise<LoginResult | null> {
   sessionStorage.removeItem(REDIRECT_STATE_KEY)
   if (!saved) return null
 
-  const { search, searchParams: answer } = new URL(window.location.href)
+  const answer = new URL(window.location.href)
   if (
     saved.silent &&
-    LOGIN_REQUIRED_ERRORS.has(answer.get('error') ?? '') &&
-    answer.get('state') === saved.state
+    isLoginRequired(answer.searchParams.get('error')) &&
+    answer.searchParams.get('state') === saved.state
   ) {
     throw new LoginRequiredError(saved.returnTo)
   }
 
-  // The token request names the redirect URI the SSO sent the code to, which
-  // is not this page when a backend relays the answer here
-  const callbackUrl = new URL(getAuthConfig().redirectUri, window.location.href)
-  callbackUrl.search = search
-
-  const configuration = await discover()
-  const tokenSet = await client.authorizationCodeGrant(
-    configuration,
-    callbackUrl,
-    { pkceCodeVerifier: saved.code_verifier, expectedState: saved.state }
-  )
-  const sub = tokenSet.claims()?.sub
-  if (!sub) throw new Error('The SSO returned no ID token')
-
-  const userinfo = await client.fetchUserInfo(
-    configuration,
-    tokenSet.access_token,
-    sub
-  )
-  setTokenSet(tokenSet)
-  return { tokenSet, userinfo, returnTo: saved.returnTo }
+  const login = await exchangeCode(answer, {
+    codeVerifier: saved.code_verifier,
+    state: saved.state
+  })
+  return { ...login, returnTo: saved.returnTo }
 }
 
 /**

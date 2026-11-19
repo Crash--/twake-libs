@@ -30,7 +30,7 @@ await migrateDb(sql, fileURLToPath(new URL('../drizzle', import.meta.url)))
 
 const app = createServer({
   logger: log,
-  isReady: async () => (await sql`select 1`).length === 1,
+  isReady: async () => (await sql`select 1`).length === 1
 })
 await app.listen({ host: '0.0.0.0', port: 8080 })
 

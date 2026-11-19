@@ -1,5 +1,6 @@
-import type { Sdk, SdkStatus } from '@linagora/twake-sdk'
 import React, { createContext, useContext, useSyncExternalStore } from 'react'
+
+import type { Sdk, SdkStatus } from '@linagora/twake-sdk'
 
 const SdkContext = createContext<Sdk | null>(null)
 

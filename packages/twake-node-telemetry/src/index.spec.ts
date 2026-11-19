@@ -45,7 +45,8 @@ describe('createLogger', () => {
             openid_token: 'def',
             users: [{ email: 'bob@example.com' }]
           },
-          user: { email: 'alice@example.com', name: 'Alice' }
+          user: { email: 'alice@example.com', name: 'Alice' },
+          payload: { twakeactor: 'carol@example.com', type: 'activity' }
         },
         'request'
       )
@@ -59,7 +60,8 @@ describe('createLogger', () => {
         openid_token: '[Redacted]',
         users: [{ email: '[Redacted]' }]
       },
-      user: { email: '[Redacted]', name: 'Alice' }
+      user: { email: '[Redacted]', name: 'Alice' },
+      payload: { twakeactor: '[Redacted]', type: 'activity' }
     })
   })
 

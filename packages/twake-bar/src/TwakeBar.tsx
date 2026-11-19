@@ -1,5 +1,6 @@
-import { Skeleton, styled, useBreakpoints } from '@linagora/twake-mui'
 import React from 'react'
+
+import { Skeleton, styled, useBreakpoints } from '@linagora/twake-mui'
 
 import { AppsMenu, FallbackAppsMenu, type BarFallbackApp } from './AppsMenu'
 import { BarLeft, type BarApp } from './BarLeft'

@@ -1,3 +1,18 @@
+## @linagora/twake-feedback [1.1.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-feedback@1.1.2...@linagora/twake-feedback@1.1.3) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+## @linagora/twake-feedback [1.1.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-feedback@1.1.1...@linagora/twake-feedback@1.1.2) (2026-11-09)
+
+
+### Bug Fixes
+
+* **twake-feedback:** Open the form below a button moved to the top ([3e6d5cc](https://github.com/linagora/twake-libs/commit/3e6d5cc8a0920f4b72af2b973facfac17b5c2b34))
+* **twake-feedback:** Slide the form down instead of opening it below the button ([a1a8034](https://github.com/linagora/twake-libs/commit/a1a8034cc672c019680fb9940727826aaef7a40a))
+
 ## @linagora/twake-feedback [1.1.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-feedback@1.1.0...@linagora/twake-feedback@1.1.1) (2026-10-12)
 
 

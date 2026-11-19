@@ -1,3 +1,24 @@
+## @linagora/twake-node-telemetry [1.2.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-node-telemetry@1.2.0...@linagora/twake-node-telemetry@1.2.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+# @linagora/twake-node-telemetry [1.2.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-node-telemetry@1.1.0...@linagora/twake-node-telemetry@1.2.0) (2026-10-30)
+
+
+### Features
+
+* **twake-node-telemetry:** Redact twakeactor, the mail of the user in activity events ([8459f56](https://github.com/linagora/twake-libs/commit/8459f56c4d9be16e379694eee0fd0f1c11e98874))
+
+# @linagora/twake-node-telemetry [1.1.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-node-telemetry@1.0.0...@linagora/twake-node-telemetry@1.1.0) (2026-10-26)
+
+
+### Features
+
+* **twake-node-telemetry:** Keep personal and request data out of Sentry ([eb1f65c](https://github.com/linagora/twake-libs/commit/eb1f65cc6eb2e853ec9f61dbb2794bee4411e61f))
+
 # @linagora/twake-node-telemetry 1.0.0 (2026-10-26)
 
 

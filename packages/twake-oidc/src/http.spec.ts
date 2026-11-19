@@ -8,6 +8,7 @@ describe('API requests', () => {
 
   beforeEach(async () => {
     vi.restoreAllMocks()
+    vi.unstubAllGlobals()
     // Fresh modules: the redirect in progress is module state
     vi.resetModules()
     ;({ addAuthorization, redirectOnUnauthorized } = await import('./http'))
@@ -75,5 +76,23 @@ describe('API requests', () => {
 
     expect(onLoginRequired).toHaveBeenCalledTimes(1)
     expect(startLogin).not.toHaveBeenCalled()
+  })
+
+  it('fetches with the token, and signs in again on a 401', async () => {
+    const { fetchSignedIn } = await import('./http')
+    const startLogin = vi.spyOn(oidc, 'startLogin').mockResolvedValue()
+    const fetch = vi.fn(() =>
+      Promise.resolve(new Response(null, { status: 401 }))
+    )
+    vi.stubGlobal('fetch', fetch)
+    setTokenSet({ access_token: 'token' })
+    const request = new Request('https://api.example.com/users')
+
+    const response = await fetchSignedIn(request)
+
+    expect(response.status).toBe(401)
+    expect(request.headers.get('Authorization')).toBe('Bearer token')
+    expect(fetch).toHaveBeenCalledWith(request)
+    expect(startLogin).toHaveBeenCalledOnce()
   })
 })

@@ -27,9 +27,9 @@ import { createWebSocketConnection } from '@linagora/twake-websocket'
 const socket = await createWebSocketConnection({
   url: 'wss://example.com/ws?ticket=abc',
   callbacks: {
-    onMessage: (data) => console.log(data),
-    onClose: (event) => console.log('closed', event),
-    onError: (error) => console.error(error)
+    onMessage: data => console.log(data),
+    onClose: event => console.log('closed', event),
+    onError: error => console.error(error)
   }
 })
 ```
@@ -43,7 +43,7 @@ function MyComponent() {
   const { socket, isOpen, isConnecting, triggerReconnect } = useWebSocket({
     url: 'wss://example.com/ws?ticket=abc',
     enabled: isAuthenticated,
-    onMessage: (data) => console.log(data)
+    onMessage: data => console.log(data)
   })
 
   // ...

@@ -243,6 +243,52 @@ describe('parseHostMessage', () => {
       parseHostMessage({ type: 'twake-embed:path', resourceId: 'p1', path: '' })
     ).toBeNull()
   })
+
+  it('reads an upload of 1 to 100 files', () => {
+    const file = new File(['a'], 'a.txt')
+    expect(
+      parseHostMessage({
+        type: 'twake-embed:upload',
+        id: 'u1',
+        resourceId: 'd1',
+        files: [file]
+      })
+    ).toEqual({
+      type: 'twake-embed:upload',
+      id: 'u1',
+      resourceId: 'd1',
+      files: [file]
+    })
+    const upload = (files: unknown): unknown =>
+      parseHostMessage({
+        type: 'twake-embed:upload',
+        id: 'u1',
+        resourceId: 'd1',
+        files
+      })
+    expect(upload([])).toBeNull()
+    expect(upload(Array.from({ length: 101 }, () => file))).toBeNull()
+    expect(upload(['a.txt'])).toBeNull()
+    expect(
+      parseHostMessage({
+        type: 'twake-embed:upload',
+        id: '',
+        resourceId: 'd1',
+        files: [file]
+      })
+    ).toBeNull()
+  })
+})
+
+describe('parseAppMessage upload-done', () => {
+  it('reads whether the upload worked', () => {
+    expect(
+      parseAppMessage({ type: 'twake-embed:upload-done', id: 'u1', ok: true })
+    ).toEqual({ type: 'twake-embed:upload-done', id: 'u1', ok: true })
+    expect(
+      parseAppMessage({ type: 'twake-embed:upload-done', id: 'u1' })
+    ).toBeNull()
+  })
 })
 
 describe('parseOverlayRegion', () => {

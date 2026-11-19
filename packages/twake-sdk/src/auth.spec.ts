@@ -17,7 +17,8 @@ describe('exchangeIdToken', () => {
       accessToken: 'access-1',
       refreshToken: 'refresh-1',
       clientId: 'client-id',
-      clientSecret: 'client-secret'
+      clientSecret: 'client-secret',
+      appSlug: 'calendar'
     })
     const [, init] = fetchMock.mock.calls[0] as [URL, RequestInit]
     expect(bodyOf(init)).toEqual({
@@ -46,7 +47,8 @@ describe('refreshCredentials', () => {
       accessToken: 'access-1',
       refreshToken: 'refresh-1',
       clientId: 'client-id',
-      clientSecret: 'client-secret'
+      clientSecret: 'client-secret',
+      appSlug: 'calendar'
     }
 
     const next = await refreshCredentials(PLATFORM_URL, credentials)

@@ -9,9 +9,11 @@ twake-libs/
 ├── packages/
 │   ├── twake-e2e/          # Fake SSO and sign-in helpers for end-to-end suites
 │   ├── twake-feedback/     # Draggable feedback button and Sentry feedback wiring
+│   ├── twake-node-oidc/    # SSO access tokens and logout for Node backends
 │   ├── twake-node-server/  # HTTP server, shutdown and Postgres for Node backends
 │   ├── twake-node-telemetry/ # Logs and Sentry for Node backends
 │   ├── twake-oidc/         # SSO sign-in and session
+│   ├── twake-react-new-version/ # "New version available" dialog
 │   ├── twake-utils/        # Shared utils
 │   └── ...                 # Other packages (to be added)
 ├── package.json            # Root workspace config
@@ -42,6 +44,14 @@ npm run test
 
 ```bash
 npm run lint
+```
+
+[Rslint](https://rslint.rs) lints the code and `rs fmt` formats it, both from [Rstack](https://rstack.rs).
+
+### Format all files
+
+```bash
+npm run fmt
 ```
 
 ## Workspace Management
@@ -96,11 +106,7 @@ Create your package in `packages/<name>/` with the required `package.json` field
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "CHANGELOG.md",
-    "README.md"
-  ]
+  "files": ["dist", "CHANGELOG.md", "README.md"]
 }
 ```
 

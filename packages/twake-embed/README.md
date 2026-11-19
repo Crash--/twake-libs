@@ -93,7 +93,11 @@ Two ways to grow, not to be confused:
   `allow="fullscreen"` on the frame:
 
   ```ts
-  import { canGoFullscreen, requestFullscreen, exitFullscreen } from '@linagora/twake-embed'
+  import {
+    canGoFullscreen,
+    requestFullscreen,
+    exitFullscreen
+  } from '@linagora/twake-embed'
 
   if (canGoFullscreen()) await requestFullscreen(player)
   ```
@@ -165,6 +169,17 @@ space?.notify({
 space?.closeNotification('call:!room')
 ```
 
+The uploads: the user picks files in TwakeSpace (the composer of a space's
+feed), and TwakeSpace sends them to the app's frame for one of its resources:
+a drive keeps them at its root. The app stores them and TwakeSpace hears
+whether the promise resolved. Without a handler, every upload is refused:
+
+```ts
+const stop = space?.onUpload(async (driveId, files) => {
+  await uploadToRoot(driveId, files)
+})
+```
+
 Links leaving the frame open in a new tab, and the frame stays on the app:
 
 - On once the app is connected; `connectToTwakeSpace({ interceptExternalLinks: false })` turns it off.
@@ -177,7 +192,13 @@ Links leaving the frame open in a new tab, and the frame stays on the app:
 ## In TwakeSpace
 
 ```ts
-import { helloMessage, parseAppMessage, loadMessage, navigateMessage, embedUrl } from '@linagora/twake-embed'
+import {
+  helloMessage,
+  parseAppMessage,
+  loadMessage,
+  navigateMessage,
+  embedUrl
+} from '@linagora/twake-embed'
 ```
 
 TwakeSpace posts `helloMessage()` to a frame on each of its `load` events
@@ -187,5 +208,7 @@ message holds the app's counts by resource id, a `twake-embed:metadata`
 message its metadata by resource id and name (its counts too, under `badge`,
 which then win over its `badges`), and a `twake-embed:pip`
 message a call the app asks TwakeSpace to open in its call window, to check
-against its Meet before it does. `embedUrl` builds the frame's `src` for a resource at a
+against its Meet before it does. `uploadMessage(id, resourceId, files)` sends
+picked files to a frame, which answers with a `twake-embed:upload-done`
+message of the same id. `embedUrl` builds the frame's `src` for a resource at a
 path, and refuses a path that leaves the embed route.

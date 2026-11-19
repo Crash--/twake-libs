@@ -1,3 +1,18 @@
+## @linagora/twake-utils [1.2.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-utils@1.2.2...@linagora/twake-utils@1.2.3) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+## @linagora/twake-utils [1.2.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-utils@1.2.1...@linagora/twake-utils@1.2.2) (2026-11-10)
+
+
+### Bug Fixes
+
+* **twake-utils:** Only accept a Matrix ID or localpart as chat target ([132daef](https://github.com/linagora/twake-libs/commit/132daef2b335ef5916b4ac417ccf34977db0c3be)), closes [#56](https://github.com/linagora/twake-libs/issues/56)
+* **twake-utils:** Reject dot-only chat targets ([6acf918](https://github.com/linagora/twake-libs/commit/6acf91800df9f42906dab24633378a53f7aa96f5))
+
 ## @linagora/twake-utils [1.2.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-utils@1.2.0...@linagora/twake-utils@1.2.1) (2026-10-13)
 
 

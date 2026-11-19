@@ -67,3 +67,14 @@ export async function redirectOnUnauthorized(
     console.error('SSO redirect failed:', error)
   }
 }
+
+/**
+ * fetch with addAuthorization and redirectOnUnauthorized around the request,
+ * for an application that does not use ky.
+ */
+export async function fetchSignedIn(request: Request): Promise<Response> {
+  addAuthorization(request)
+  const response = await fetch(request)
+  await redirectOnUnauthorized(request, undefined, response)
+  return response
+}

@@ -16,6 +16,8 @@ export interface Credentials {
   refreshToken: string
   clientId: string
   clientSecret: string
+  /** Slug of the container app the token is linked to, null without one */
+  appSlug: string | null
 }
 
 /** An `io.cozy.apps` document, attributes and links flattened */

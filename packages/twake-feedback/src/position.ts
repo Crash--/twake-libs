@@ -89,8 +89,31 @@ export const snapToEdge = (
   )
 })
 
-/** Where the Sentry form opens, as the value of its `--inset` variable */
-export const getFormInset = ({ side, bottom }: FeedbackPosition): string =>
-  side === 'left'
-    ? `auto auto ${bottom}px ${EDGE_MARGIN}px`
-    : `auto ${EDGE_MARGIN}px ${bottom}px auto`
+/**
+ * Height in px kept for Sentry's form (e-mail, message, screenshot, buttons
+ * and its margins), measured roughly, not at run time
+ */
+export const FORM_HEIGHT = 520
+
+/**
+ * Where the Sentry form opens, as the value of its `--inset` variable: on the
+ * side of the button, its bottom at the bottom of the button, slid down when
+ * the form would leave the top of the viewport (a button moved to the top).
+ * Anchored by its bottom, the form never loses its send button: Sentry caps
+ * its height to the viewport and scrolls it.
+ */
+// ponytail: FORM_HEIGHT is a guess; a taller form shows its top cut, never its buttons
+export const getFormInset = (
+  { side, bottom }: FeedbackPosition,
+  viewportHeight: number
+): string => {
+  const [right, left] =
+    side === 'left'
+      ? ['auto', `${EDGE_MARGIN}px`]
+      : [`${EDGE_MARGIN}px`, 'auto']
+  const formBottom = Math.min(
+    bottom,
+    Math.max(EDGE_MARGIN, viewportHeight - EDGE_MARGIN - FORM_HEIGHT)
+  )
+  return `auto ${right} ${formBottom}px ${left}`
+}

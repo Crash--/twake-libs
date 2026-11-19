@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from 'react'
+
 import { Icon, Mosaic } from '@linagora/twake-icons'
 import { ButtonBase, Skeleton, Typography, styled } from '@linagora/twake-mui'
 import type { App, Sdk, Shortcut } from '@linagora/twake-sdk'
-import React, { useEffect, useState } from 'react'
-
 import { useI18n } from 'twake-i18n'
 
 import { BarMenu } from './BarMenu'

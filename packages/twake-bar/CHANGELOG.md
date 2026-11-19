@@ -1,3 +1,17 @@
+## @linagora/twake-bar [1.1.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.2...@linagora/twake-bar@1.1.3) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+## @linagora/twake-bar [1.1.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.1...@linagora/twake-bar@1.1.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* **twake-bar:** Translate the bar in German and fall back to English ([0ea3f7d](https://github.com/linagora/twake-libs/commit/0ea3f7da2b566b8aba75d3032ec093e0f2edaae0)), closes [#47](https://github.com/linagora/twake-libs/issues/47)
+
 ## @linagora/twake-bar [1.1.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.0...@linagora/twake-bar@1.1.1) (2026-10-22)
 
 

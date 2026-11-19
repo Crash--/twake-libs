@@ -1,8 +1,8 @@
+import React, { useState } from 'react'
+
 import { Icon, TwakeText, TwakeWorkplace } from '@linagora/twake-icons'
 import { Divider, styled, useBreakpoints } from '@linagora/twake-mui'
 import type { Sdk } from '@linagora/twake-sdk'
-import React, { useState } from 'react'
-
 import { useI18n } from 'twake-i18n'
 
 import { useSdk, useSdkStatus } from './SdkProvider'

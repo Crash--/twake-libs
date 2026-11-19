@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+
 import {
   Dialog,
   IconButton,
@@ -5,7 +7,6 @@ import {
   styled,
   useBreakpoints
 } from '@linagora/twake-mui'
-import React, { useState } from 'react'
 
 export interface BarMenuProps {
   /** Content of the button opening the menu */

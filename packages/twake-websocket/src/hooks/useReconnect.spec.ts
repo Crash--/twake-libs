@@ -2,12 +2,12 @@ import { renderHook, act } from '@testing-library/react'
 import { MutableRefObject } from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
+import { getRetryDelay } from '../utils/getRetryDelay'
 import {
   MAX_RECONNECT_ATTEMPTS,
   RECONNECT_CONFIG,
   useWebSocketReconnect
 } from './useReconnect'
-import { getRetryDelay } from '../utils/getRetryDelay'
 
 vi.mock('../utils/getRetryDelay')
 

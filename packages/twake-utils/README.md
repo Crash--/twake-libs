@@ -11,4 +11,3 @@ You need to use Node 24+
 ```bash
 npm install @linagora/twake-utils
 ```
-

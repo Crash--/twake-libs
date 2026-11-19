@@ -1,3 +1,19 @@
+## @linagora/twake-oidc [1.4.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-oidc@1.4.0...@linagora/twake-oidc@1.4.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* Publish with npm provenance ([913c37d](https://github.com/linagora/twake-libs/commit/913c37db3fd78ab56f981607213c29fe15b930a0))
+
+# @linagora/twake-oidc [1.4.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-oidc@1.3.0...@linagora/twake-oidc@1.4.0) (2026-11-11)
+
+
+### Features
+
+* **twake-oidc:** Read the SSO settings of env.js and fetch without ky ([91cafd0](https://github.com/linagora/twake-libs/commit/91cafd033e4abeeab859f055dfc0a1ee466c7563))
+* **twake-oidc:** Resume the session as the application starts ([a1984f2](https://github.com/linagora/twake-libs/commit/a1984f22bf5e707db1d268b3d321f863fe1d7105))
+* **twake-oidc:** Sign in through a hidden frame or a popup ([a537589](https://github.com/linagora/twake-libs/commit/a5375890225e58827331fdc3605a3c88b50e8c56))
+
 # @linagora/twake-oidc [1.3.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-oidc@1.2.0...@linagora/twake-oidc@1.3.0) (2026-10-23)
 
 

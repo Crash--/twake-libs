@@ -2,7 +2,8 @@ export {
   connectToTwakeSpace,
   type HistoryHandlers,
   type TwakeSpaceConnection,
-  type TwakeSpaceOptions
+  type TwakeSpaceOptions,
+  type UploadHandler
 } from './app.js'
 export {
   BADGES_MESSAGE,
@@ -18,6 +19,8 @@ export {
   PATH_MESSAGE,
   PIP_MESSAGE,
   READY_MESSAGE,
+  UPLOAD_DONE_MESSAGE,
+  UPLOAD_MESSAGE,
   badgesMessage,
   fillPageMessage,
   helloMessage,
@@ -30,6 +33,7 @@ export {
   overlayRegionMessage,
   parseAppMessage,
   parseBadges,
+  parseFiles,
   parseHostMessage,
   parseMetadata,
   parseOverlayRegion,
@@ -37,6 +41,8 @@ export {
   pathMessage,
   pipMessage,
   readyMessage,
+  uploadDoneMessage,
+  uploadMessage,
   type AppMessage,
   type Badge,
   type BadgesMessage,
@@ -55,7 +61,9 @@ export {
   type OverlayRegionMessage,
   type PathMessage,
   type PipMessage,
-  type ReadyMessage
+  type ReadyMessage,
+  type UploadDoneMessage,
+  type UploadMessage
 } from './messages.js'
 export {
   canGoFullscreen,

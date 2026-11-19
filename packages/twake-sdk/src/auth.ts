@@ -5,7 +5,12 @@ interface TokenResponse {
   refresh_token?: string
   client_id?: string
   client_secret?: string
+  scope?: string
 }
+
+/** The scope of a linked-app token is `@io.cozy.apps/<slug>` */
+const linkedAppSlug = (scope = ''): string | null =>
+  /^@io\.cozy\.apps\/([^\s/]+)$/.exec(scope)?.[1] ?? null
 
 export class SdkAuthError extends Error {
   readonly status: number
@@ -47,7 +52,8 @@ export async function exchangeIdToken(
     accessToken: token.access_token,
     refreshToken: token.refresh_token,
     clientId: token.client_id,
-    clientSecret: token.client_secret
+    clientSecret: token.client_secret,
+    appSlug: linkedAppSlug(token.scope)
   }
 }
 

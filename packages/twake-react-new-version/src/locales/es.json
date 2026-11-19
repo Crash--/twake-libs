@@ -1,0 +1,8 @@
+{
+  "twakeNewVersion": {
+    "title": "Novedades de %{appName}",
+    "body": "Acaba de llegar una actualización. Recarga para obtenerla.",
+    "reload": "Recargar",
+    "notNow": "Ahora no"
+  }
+}

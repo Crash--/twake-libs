@@ -6,7 +6,8 @@ export const CREDENTIALS = {
   access_token: 'access-1',
   refresh_token: 'refresh-1',
   client_id: 'client-id',
-  client_secret: 'client-secret'
+  client_secret: 'client-secret',
+  scope: '@io.cozy.apps/calendar'
 }
 
 export const json = (body: unknown, status = 200): Response =>

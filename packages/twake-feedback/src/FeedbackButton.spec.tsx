@@ -1,7 +1,8 @@
-import { Dialog } from '@linagora/twake-mui'
 import { act, fireEvent, screen } from '@testing-library/react'
 import React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { Dialog } from '@linagora/twake-mui'
 
 import { FeedbackButton, type FeedbackButtonProps } from './FeedbackButton'
 import { renderWithProviders } from './testUtils'
@@ -215,7 +216,8 @@ describe('FeedbackButton', () => {
       })
 
       expect(getButton()).toHaveStyle({ bottom: '328px' })
-      expect(getInsetStyle()).toContain('auto 16px 328px auto')
+      // At the top now: the form slides down to the bottom edge
+      expect(getInsetStyle()).toContain('auto 16px 16px auto')
     })
   })
 
@@ -242,7 +244,8 @@ describe('FeedbackButton', () => {
       fireEvent.pointerUp(button, { pointerId: 1, clientX: 100, clientY: 400 })
 
       expect(button).toHaveStyle({ left: '16px', bottom: '336px' })
-      expect(getInsetStyle()).toContain('auto auto 336px 16px')
+      // 768 - 16 - FORM_HEIGHT: slid down so that the form stays in view
+      expect(getInsetStyle()).toContain('auto auto 232px 16px')
       expect(onSideChange).toHaveBeenLastCalledWith('left')
       expect(
         JSON.parse(window.localStorage.getItem(STORAGE) ?? 'null')
@@ -346,7 +349,8 @@ describe('FeedbackButton', () => {
       )
 
       expect(getButton()).toHaveStyle({ left: '16px', bottom: '250px' })
-      expect(getInsetStyle()).toContain('auto auto 250px 16px')
+      // 768 - 16 - FORM_HEIGHT: slid down so that the form stays in view
+      expect(getInsetStyle()).toContain('auto auto 232px 16px')
       expect(onSideChange).toHaveBeenLastCalledWith('left')
       expect(
         JSON.parse(window.localStorage.getItem(STORAGE) ?? 'null')

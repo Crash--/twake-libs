@@ -16,6 +16,8 @@ export const METADATA_MESSAGE = 'twake-embed:metadata'
 export const NOTIFICATION_MESSAGE = 'twake-embed:notification'
 export const NOTIFICATION_CLOSE_MESSAGE = 'twake-embed:notification-close'
 export const PIP_MESSAGE = 'twake-embed:pip'
+export const UPLOAD_MESSAGE = 'twake-embed:upload'
+export const UPLOAD_DONE_MESSAGE = 'twake-embed:upload-done'
 
 /**
  * The URL of the frame changed. `replace` is true when the app replaced its
@@ -133,6 +135,28 @@ export interface PipMessage {
   url: string
 }
 
+/**
+ * Whether the files of the upload `id` were stored: the answer to
+ * `twake-embed:upload`. An app with no upload answers false at once.
+ */
+export interface UploadDoneMessage {
+  type: typeof UPLOAD_DONE_MESSAGE
+  id: string
+  ok: boolean
+}
+
+/**
+ * Files the user picked in TwakeSpace, for the app to store in its resource:
+ * a drive keeps them at its root. The picker opens in TwakeSpace, where the
+ * user clicked: a frame may not open one without a click of its own.
+ */
+export interface UploadMessage {
+  type: typeof UPLOAD_MESSAGE
+  id: string
+  resourceId: string
+  files: readonly File[]
+}
+
 /** Show another resource, at `path`, in the same frame */
 export interface LoadMessage {
   type: typeof LOAD_MESSAGE
@@ -167,9 +191,11 @@ export type AppMessage =
   | NotificationMessage
   | NotificationCloseMessage
   | PipMessage
+  | UploadDoneMessage
 
 /** From TwakeSpace to the app */
-export type HostMessage = HelloMessage | LoadMessage | NavigateMessage
+export type HostMessage =
+  HelloMessage | LoadMessage | NavigateMessage | UploadMessage
 
 export interface OverlayBox {
   x: number
@@ -253,6 +279,28 @@ export function navigateMessage(
 
 export function helloMessage(): HelloMessage {
   return { type: HELLO_MESSAGE }
+}
+
+export function uploadMessage(
+  id: string,
+  resourceId: string,
+  files: readonly File[]
+): UploadMessage {
+  return { type: UPLOAD_MESSAGE, id, resourceId, files }
+}
+
+export function uploadDoneMessage(id: string, ok: boolean): UploadDoneMessage {
+  return { type: UPLOAD_DONE_MESSAGE, id, ok }
+}
+
+const MAX_FILES = 100
+
+/** Files as sent, bounded: from 1 to 100 of them */
+export function parseFiles(value: unknown): File[] | null {
+  if (!Array.isArray(value) || value.length === 0 || value.length > MAX_FILES) {
+    return null
+  }
+  return value.every(file => file instanceof File) ? [...value] : null
 }
 
 const MAX_BOXES = 32
@@ -464,6 +512,10 @@ export function parseAppMessage(data: unknown): AppMessage | null {
       const url = parsePipUrl(data.url)
       return url === null ? null : pipMessage(url)
     }
+    case UPLOAD_DONE_MESSAGE:
+      return isTag(data.id) && typeof data.ok === 'boolean'
+        ? uploadDoneMessage(data.id, data.ok)
+        : null
     default:
       return null
   }
@@ -483,6 +535,12 @@ export function parseHostMessage(data: unknown): HostMessage | null {
       return isResourceAndPath(data)
         ? navigateMessage(data.resourceId, data.path)
         : null
+    case UPLOAD_MESSAGE: {
+      const files = parseFiles(data.files)
+      return isTag(data.id) && isTag(data.resourceId) && files !== null
+        ? uploadMessage(data.id, data.resourceId, files)
+        : null
+    }
     default:
       return null
   }

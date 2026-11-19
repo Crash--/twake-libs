@@ -27,6 +27,7 @@ import {
   pathMessage,
   pipMessage,
   readyMessage,
+  uploadDoneMessage,
   type AppMessage,
   type Badge,
   type Metadata,
@@ -78,6 +79,11 @@ export interface HistoryHandlers {
   onNavigate: (resourceId: string, path: string) => void | Promise<void>
 }
 
+export type UploadHandler = (
+  resourceId: string,
+  files: readonly File[]
+) => Promise<void>
+
 export interface TwakeSpaceConnection {
   /** The resource and path of the frame's URL, null off the embed route */
   location: () => EmbedLocation | null
@@ -125,6 +131,12 @@ export interface TwakeSpaceConnection {
    * over its page. TwakeSpace opens the rooms of its Meet only.
    */
   openPip: (url: string) => void
+  /**
+   * Stores the files TwakeSpace sends for one of the app's resources, from
+   * now on: TwakeSpace hears whether the promise resolved. The returned
+   * function stops it; without a handler, every upload is refused.
+   */
+  onUpload: (handler: UploadHandler) => () => void
   /**
    * Leaves the history to TwakeSpace, from now on: a push becomes a replace,
    * every change of the URL is reported (the current one first, as a
@@ -194,6 +206,7 @@ export function connectToTwakeSpace(
   let badges: readonly Badge[] | null = null
   let metadata: readonly Metadata[] | null = null
 
+  let uploader: UploadHandler | null = null
   let handlers: HistoryHandlers | null = null
   let stop: (() => void) | null = null
   let suppressed = 0
@@ -227,6 +240,23 @@ export function connectToTwakeSpace(
       if (metadata !== null) post(metadataMessage(metadata))
     }
     if (message.type === 'twake-embed:hello') return
+    if (message.type === 'twake-embed:upload') {
+      const { id, resourceId, files } = message
+      const store = uploader
+      if (store === null || !isResourceId(resourceId)) {
+        post(uploadDoneMessage(id, false))
+        return
+      }
+      void (async (): Promise<void> => {
+        try {
+          await store(resourceId, files)
+          post(uploadDoneMessage(id, true))
+        } catch {
+          post(uploadDoneMessage(id, false))
+        }
+      })()
+      return
+    }
     const { resourceId, path } = message
     if (handlers === null || !isResourceId(resourceId)) return
     if (!staysBelow(embedRoute(embedPrefix, resourceId), path)) return
@@ -310,6 +340,12 @@ export function connectToTwakeSpace(
     },
     openPip: (url): void => {
       post(pipMessage(url))
+    },
+    onUpload: (handler): (() => void) => {
+      uploader = handler
+      return (): void => {
+        if (uploader === handler) uploader = null
+      }
     },
     syncHistory,
     disconnect: (): void => {

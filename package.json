@@ -17,9 +17,11 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
-    "lint:fix": "npm run lint --workspaces --if-present -- --fix",
+    "test": "vitest run",
+    "lint": "rs lint packages/*/src",
+    "lint:fix": "rs lint --fix packages/*/src && rs fmt",
+    "lint:fmt": "rs fmt --check",
+    "fmt": "rs fmt",
     "clean": "npm run clean --workspaces && rm -rf node_modules",
     "release": "multi-semantic-release --deps.bump=ignore",
     "release:dry": "multi-semantic-release --deps.bump=ignore --dry-run"
@@ -30,6 +32,8 @@
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "multi-semantic-release": "3.1.0",
+    "rslint-config-cozy-app": "0.2.0",
+    "rstack": "0.8.5",
     "typescript": "5.5.2",
     "vitest": "5.0.1"
   },

@@ -58,7 +58,11 @@ await sso.close()
 ## Playwright
 
 ```ts
-import { asPerson, signIn, signOutOfTheSso } from '@linagora/twake-e2e/playwright'
+import {
+  asPerson,
+  signIn,
+  signOutOfTheSso
+} from '@linagora/twake-e2e/playwright'
 
 test('alice shares a note with bob', async ({ page, browser }) => {
   await signIn(page, 'alice', {

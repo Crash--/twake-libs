@@ -1,8 +1,8 @@
+import React from 'react'
+
 import { HelpOutlined, Icon } from '@linagora/twake-icons'
 import { IconButton } from '@linagora/twake-mui'
 import type { Sdk } from '@linagora/twake-sdk'
-import React from 'react'
-
 import { useI18n } from 'twake-i18n'
 
 import { useBarLocales } from './useBarLocales'

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-import { createWebSocketConnection } from './createConnection'
 import { WS_EVENTS } from '../protocols'
+import { createWebSocketConnection } from './createConnection'
 
 interface MockWebSocket {
   url: string

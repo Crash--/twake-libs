@@ -1,6 +1,9 @@
 import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils'
 
-const FULL_MATRIX_ID = /^@[^:]+:.+$/
+// A Matrix localpart with an optional "@", or a full "@user:server[:port]" ID.
+// A dot-only localpart is refused: "." and ".." are path dot segments.
+const CHAT_TARGET =
+  /^(?!@?\.+$)(@?[a-z0-9._=+-]+|@[a-z0-9._=+-]+:[a-z0-9.-]+(:\d+)?)$/i
 
 // "@{target}" followed by an optional ":server" part (literal or expression)
 const TEMPLATE_MATRIX_ID = /@\{\s*target\s*\}(?::[^/?#&]*)?/g
@@ -19,7 +22,8 @@ const TEMPLATE_MATRIX_ID = /@\{\s*target\s*\}(?::[^/?#&]*)?/g
  *
  * @param template - The URL template (e.g. 'https://chat.example.com/#/chat/@{target}')
  * @param context - Optional context for template resolution
- * @returns the resolved URL, or null when template is empty
+ * @returns the resolved URL, or null when template is empty or target is not
+ * a Matrix ID or localpart
  */
 export function resolveChatSpaUrl(
   template: string,
@@ -33,7 +37,9 @@ export function resolveChatSpaUrl(
 
   const target = context.target.trim()
 
-  if (FULL_MATRIX_ID.test(target)) {
+  if (!CHAT_TARGET.test(target)) return null
+
+  if (target.includes(':')) {
     return resolveUriTemplate(
       template.replace(TEMPLATE_MATRIX_ID, '{target}'),
       {

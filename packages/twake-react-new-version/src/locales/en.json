@@ -1,0 +1,8 @@
+{
+  "twakeNewVersion": {
+    "title": "What's new in %{appName}",
+    "body": "An update just arrived. Reload to get it.",
+    "reload": "Reload",
+    "notNow": "Not now"
+  }
+}

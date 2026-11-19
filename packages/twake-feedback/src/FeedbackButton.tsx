@@ -1,7 +1,7 @@
-import { Comment, Icon } from '@linagora/twake-icons'
-import { Fab, Menu, MenuItem, Tooltip, styled } from '@linagora/twake-mui'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { Comment, Icon } from '@linagora/twake-icons'
+import { Fab, Menu, MenuItem, Tooltip, styled } from '@linagora/twake-mui'
 import { useI18n } from 'twake-i18n'
 
 import { getFeedbackButtonStrings, getFeedbackLabels } from './locales'
@@ -101,7 +101,7 @@ export const FeedbackButton = ({
     bottom: clampBottom(stored.bottom, viewportHeight, bottomOffset)
   }
 
-  useFormInset(position, styleNonce)
+  useFormInset(position, viewportHeight, styleNonce)
 
   const onSideChangeRef = useRef(onSideChange)
   useEffect(() => {

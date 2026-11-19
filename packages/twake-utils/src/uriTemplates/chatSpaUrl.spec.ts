@@ -42,6 +42,15 @@ describe('resolveChatSpaUrl', () => {
     ).toBe('https://alice-chat.twake.app/#/chat/@trinity:matrix.org')
   })
 
+  it('accepts a full Matrix ID with a port and uppercase letters', () => {
+    expect(
+      resolveChatSpaUrl(SERVER_TEMPLATE, {
+        target: '@Trinity:Matrix.org:8448',
+        workplaceFqdn
+      })
+    ).toBe('https://alice-chat.twake.app/#/chat/@Trinity:Matrix.org:8448')
+  })
+
   it('replaces a literal template server for a full Matrix ID', () => {
     expect(
       resolveChatSpaUrl(
@@ -55,6 +64,25 @@ describe('resolveChatSpaUrl', () => {
     expect(
       resolveChatSpaUrl(SERVER_TEMPLATE, { target: '@neo', workplaceFqdn })
     ).toBe('https://alice-chat.twake.app/#/chat/@neo:twake.app')
+  })
+
+  it.each([
+    '@x:srv/../../room/!id:srv?via=a',
+    '@../../room:srv',
+    'x/../../room',
+    'x?via=a',
+    'x#/room',
+    'x&a=b',
+    'alice@example.com',
+    'neo:matrix.org',
+    '.',
+    '..',
+    '@..',
+    ''
+  ])('returns null for a target that is not a Matrix ID: %j', target => {
+    expect(
+      resolveChatSpaUrl(SERVER_TEMPLATE, { target, workplaceFqdn })
+    ).toBeNull()
   })
 
   it('keeps the full Matrix ID when the template has no "@" prefix', () => {

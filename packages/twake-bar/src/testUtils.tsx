@@ -1,9 +1,9 @@
-import { TwakeMuiThemeProvider } from '@linagora/twake-mui'
-import type { App, Instance, Sdk, SdkStatus } from '@linagora/twake-sdk'
 import { render, type RenderResult } from '@testing-library/react'
 import React from 'react'
 import { afterEach, beforeEach, vi } from 'vitest'
 
+import { TwakeMuiThemeProvider } from '@linagora/twake-mui'
+import type { App, Instance, Sdk, SdkStatus } from '@linagora/twake-sdk'
 import { I18n } from 'twake-i18n'
 
 import { SdkProvider } from './SdkProvider'
@@ -97,6 +97,7 @@ export const renderWithSdk = (
 
 /** Makes MUI breakpoints see a phone: `down(...)` media queries match */
 export const useMobileViewport = (): void => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- restored as is after each test
   const desktop = window.matchMedia
   beforeEach(() => {
     window.matchMedia = (query: string): MediaQueryList => ({

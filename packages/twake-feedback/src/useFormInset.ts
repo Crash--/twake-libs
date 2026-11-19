@@ -10,6 +10,7 @@ export const FORM_STYLE_ID = 'twake-feedback-position'
  */
 export const useFormInset = (
   position: FeedbackPosition,
+  viewportHeight: number,
   nonce?: string
 ): void => {
   const { side, bottom } = position
@@ -22,8 +23,8 @@ export const useFormInset = (
       if (nonce) style.nonce = nonce
       document.head.appendChild(style)
     }
-    style.textContent = `#sentry-feedback { --inset: ${getFormInset({ side, bottom })}; }`
-  }, [side, bottom, nonce])
+    style.textContent = `#sentry-feedback { --inset: ${getFormInset({ side, bottom }, viewportHeight)}; }`
+  }, [side, bottom, viewportHeight, nonce])
 
   useEffect(
     () => (): void => {

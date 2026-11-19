@@ -61,7 +61,7 @@ const AppFeedback = ({ lang }: { lang: string }) => {
 
 Drag it (past 5 px, otherwise it is a click): it follows the pointer, stays in the viewport and snaps to the nearest left or right edge on release, keeping its height. The position is stored and restored, and kept in the viewport when the window is resized. A click ending a drag does not open the form.
 
-The Sentry form opens on the same side, at the same height: the component keeps a `<style id="twake-feedback-position">` setting `--inset` on `#sentry-feedback`, and removes it on unmount.
+The Sentry form opens on the same side, its bottom at the bottom of the button, slid down when it would leave the top of the viewport (a button moved to the top), so that its buttons always show: the component keeps a `<style id="twake-feedback-position">` setting `--inset` on `#sentry-feedback`, and removes it on unmount.
 
 ## Accessibility
 

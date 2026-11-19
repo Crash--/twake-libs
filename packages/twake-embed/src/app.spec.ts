@@ -198,6 +198,45 @@ describe('connectToTwakeSpace', () => {
     space?.disconnect()
   })
 
+  it('stores the files the host sends, and says whether it worked', async () => {
+    const parent = fakeParent()
+    space = connect(parent)
+    if (!space) throw new Error('not connected')
+    const file = new File(['a'], 'a.txt')
+    const upload = (id: string): void => {
+      fromHost(parent, {
+        type: 'twake-embed:upload',
+        id,
+        resourceId: 'p2',
+        files: [file]
+      })
+    }
+
+    upload('u1')
+    const store = vi
+      .fn<(resourceId: string, files: readonly File[]) => Promise<void>>()
+      .mockResolvedValueOnce(undefined)
+      .mockRejectedValueOnce(new Error('quota'))
+    const stop = space.onUpload(store)
+    upload('u2')
+    upload('u3')
+    await vi.waitFor(() => {
+      expect(posted(parent).slice(-3)).toEqual([
+        [{ type: 'twake-embed:upload-done', id: 'u1', ok: false }, HOST],
+        [{ type: 'twake-embed:upload-done', id: 'u2', ok: true }, HOST],
+        [{ type: 'twake-embed:upload-done', id: 'u3', ok: false }, HOST]
+      ])
+    })
+    expect(store).toHaveBeenCalledWith('p2', [file])
+
+    stop()
+    upload('u4')
+    expect(posted(parent).at(-1)).toEqual([
+      { type: 'twake-embed:upload-done', id: 'u4', ok: false },
+      HOST
+    ])
+  })
+
   it('keeps to the hosts given, when some are', () => {
     const parent = fakeParent()
     space = connect(parent, '/embed/projects/p1', [HOST])
@@ -434,6 +473,7 @@ describe('connectToTwakeSpace', () => {
     space = connectToTwakeSpace({
       embedPrefix: PREFIX,
       parent,
+      // eslint-disable-next-line jest/no-disabled-tests -- a regex .test() call, not a test
       isResourceId: id => /^p\d+$/.test(id)
     })
     if (!space) throw new Error('not connected')

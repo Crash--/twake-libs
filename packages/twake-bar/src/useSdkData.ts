@@ -1,5 +1,6 @@
-import type { Sdk } from '@linagora/twake-sdk'
 import { useEffect, useState } from 'react'
+
+import type { Sdk } from '@linagora/twake-sdk'
 
 import { useSdk, useSdkStatus } from './SdkProvider'
 

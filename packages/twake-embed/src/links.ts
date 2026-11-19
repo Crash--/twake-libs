@@ -112,9 +112,7 @@ export function guardLinks(leaves: (url: URL) => boolean): () => void {
   const onSubmit = (event: SubmitEvent): void => {
     const form = event.target as HTMLFormElement
     const submitter = event.submitter as
-      | HTMLButtonElement
-      | HTMLInputElement
-      | null
+      HTMLButtonElement | HTMLInputElement | null
     // The attributes, not `submitter.formAction` and the like: Firefox and
     // WebKit answer the page's own URL when the button has no `formaction`
     const attr = (name: string): string | null =>

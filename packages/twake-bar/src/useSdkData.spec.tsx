@@ -1,7 +1,8 @@
-import type { Sdk } from '@linagora/twake-sdk'
 import { act, screen } from '@testing-library/react'
 import React from 'react'
 import { describe, expect, it } from 'vitest'
+
+import type { Sdk } from '@linagora/twake-sdk'
 
 import { makeSdk, renderWithSdk } from './testUtils'
 import { useSdkData } from './useSdkData'
