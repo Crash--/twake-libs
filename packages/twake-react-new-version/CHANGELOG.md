@@ -1,3 +1,10 @@
+## @linagora/twake-react-new-version [1.2.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.2.0...@linagora/twake-react-new-version@1.2.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* **twake-react-new-version:** Centre the text between the title and the buttons ([#74](https://github.com/linagora/twake-libs/issues/74)) ([d0dfacd](https://github.com/linagora/twake-libs/commit/d0dfacd19ffaa55b04d21529f6f4a326c9bde476))
+
 # @linagora/twake-react-new-version [1.2.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.1.2...@linagora/twake-react-new-version@1.2.0) (2026-11-18)
 
 
