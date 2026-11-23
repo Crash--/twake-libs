@@ -123,6 +123,25 @@ describe('signInSilently', () => {
     expect(frame.remove).toHaveBeenCalledOnce()
   })
 
+  it('opens no frame before the user goes to a prerendered page', async () => {
+    const { frame } = setUp(fromFrame(ANSWER))
+    let activate = (): void => undefined
+    Object.assign(document, {
+      prerendering: true,
+      addEventListener: (_type: string, listener: () => void) => {
+        activate = listener
+      }
+    })
+    const signIn = signInSilently()
+
+    await new Promise(resolve => setTimeout(resolve))
+    expect(frame.src).toBe('')
+
+    activate()
+    await expect(signIn).resolves.toMatchObject({ userinfo: { sub: 'alice' } })
+    expect(frame.src).toBe('https://sso.example.com/auth')
+  })
+
   it('ignores the messages of other windows and origins', async () => {
     const browser = setUp(b => {
       b.deliver({

@@ -116,3 +116,17 @@ Framed:
 - `getPendingReturnTo()` tells, on the callback page, which path a pending sign-in comes back to, without finishing it.
 - `resumeSession()` rejects with the `LoginRequiredError` of its silent sign-in, rather than asking the SSO the same question again through `startLogin()`.
 - `signInWithPopup()` lets the user sign in from the frame itself, since the popup is a window of its own.
+
+## In a prerendered page
+
+The navigation rail can prerender the next app (Speculation Rules), so the app runs before the user goes to it. Chrome holds back the frames of other origins until then, and the redirect to the SSO did not keep the `sessionStorage` written before it (Chrome 156): a sign-in started there times out or loops.
+
+- `startLogin()` and `signInSilently()` wait until the user goes to the page, so `resumeSession()` does too.
+- An app with a sign-in of its own awaits `waitForActivation()` first:
+
+```ts
+import { waitForActivation } from '@linagora/twake-oidc'
+
+await waitForActivation()
+await mySilentSignIn()
+```

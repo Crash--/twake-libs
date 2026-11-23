@@ -7,6 +7,7 @@ import {
   LoginRequiredError,
   type LoginResult
 } from './oidc'
+import { waitForActivation } from './prerender'
 
 export type SignInResult = Omit<LoginResult, 'returnTo'>
 
@@ -101,6 +102,7 @@ async function signInAt(
  * @throws LoginRequiredError when the SSO needs the user to sign in.
  */
 export async function signInSilently(): Promise<SignInResult> {
+  await waitForActivation()
   const frame = document.createElement('iframe')
   frame.name = silentName()
   frame.hidden = true
