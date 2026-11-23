@@ -1,0 +1,50 @@
+{
+  "name": "@linagora/twake-crypto-utils",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Isomorphic cryptography helpers for Twake services: scrypt, PBKDF2, AES-CBC/GCM, RSA keypair generation, HMAC-SHA256, SHA-256, JWT decode, and secure random helpers",
+  "author": "Twake",
+  "license": "MIT",
+  "engines": {
+    "node": "24.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linagora/twake-libs.git",
+    "directory": "packages/twake-crypto-utils"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js",
+      "default": "./dist/node.js"
+    }
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "tsc -p tsconfig.build.json --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "cozy-tsconfig": "^2.0.0",
+    "vitest": "5.0.1"
+  }
+}

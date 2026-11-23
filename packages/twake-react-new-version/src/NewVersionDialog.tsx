@@ -7,7 +7,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  dialogTitleClasses
 } from '@linagora/twake-mui'
 import { useExtendI18n, useI18n } from 'twake-i18n'
 
@@ -204,8 +205,19 @@ export const NewVersionDialog = ({
         {/* The typings of twake-i18n's `t` take no interpolation options */}
         {t('twakeNewVersion.title').replace('%{appName}', appName)}
       </DialogTitle>
-      {/* With notes, PatchNotes is the only scrolling zone */}
-      <DialogContent sx={notes !== null ? { overflowY: 'visible' } : undefined}>
+      {/* The theme leaves 32 px (28 below md) more above the content than
+          under it. The top padding, set by the theme on a content that follows
+          a title (hence the same selector), gives up 16 px and the bottom
+          takes 12 (8 below md): the text sits midway between the title and
+          the buttons, list margins or not, in a dialog no taller than before.
+          With notes, PatchNotes is the only scrolling zone */}
+      <DialogContent
+        sx={{
+          [`.${dialogTitleClasses.root} + &`]: { pt: 1 },
+          pb: { xs: 1, md: 1.5 },
+          ...(notes !== null && { overflowY: 'visible' })
+        }}
+      >
         {notes !== null ? (
           <PatchNotes notes={notes} titleId={titleId} />
         ) : (

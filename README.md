@@ -7,6 +7,7 @@ Monorepo containing shared libs packages for Twake applications.
 ```
 twake-libs/
 ├── packages/
+│   ├── twake-crypto-utils/ # Cryptography helpers on the Web Crypto API
 │   ├── twake-e2e/          # Fake SSO and sign-in helpers for end-to-end suites
 │   ├── twake-feedback/     # Draggable feedback button and Sentry feedback wiring
 │   ├── twake-node-oidc/    # SSO access tokens and logout for Node backends

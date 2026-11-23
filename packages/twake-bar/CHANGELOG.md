@@ -1,3 +1,10 @@
+# @linagora/twake-bar [1.2.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.3...@linagora/twake-bar@1.2.0) (2026-11-19)
+
+
+### Features
+
+* **twake-bar:** Let the host give its account menu off the platform ([55b0325](https://github.com/linagora/twake-libs/commit/55b032557c859d2bc19d0400ed2492eb4617dadf))
+
 ## @linagora/twake-bar [1.1.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.2...@linagora/twake-bar@1.1.3) (2026-11-18)
 
 
