@@ -12,7 +12,9 @@ Without it, the release of the new package fails in `verifyConditions` with:
 [@linagora/<name>] › ✘  ENONPMTOKEN No npm token specified.
 ```
 
-The other packages are still released; only the new one is skipped.
+The whole release run stops there: no package of the monorepo is published,
+not even the ones that changed. Do the setup below before merging the first
+change of a new package.
 
 ## Who can do it
 
@@ -59,11 +61,14 @@ need write access to the `@linagora` scope):
 ```bash
 cd packages/<name>
 npm run build
-npm publish --access public --tag bootstrap
+npm publish --access public --tag bootstrap --provenance=false
 ```
 
-Use a version that semantic-release will never produce, or deprecate it right
-after. Do **not** run `npm run release` locally.
+`--provenance=false` is needed because `publishConfig.provenance` is only
+supported in CI. Keep the `0.0.0` version of `package.json`: semantic-release
+never produces it, while a bootstrap `1.0.0` would block the first release, as
+npm never accepts a version number twice, even deprecated or unpublished. Do
+**not** run `npm run release` locally.
 
 ## 3. Give the `admin` team write access
 
@@ -77,10 +82,11 @@ opens `https://www.npmjs.com/settings/linagora/teams/team/admin/access`, types
 the package name, **picks it in the suggestion list** (the button does nothing
 otherwise), clicks **+ Add Existing Package** and keeps **Read and write**.
 
-Check it:
+Check it (the endpoint is public):
 
 ```bash
 curl -s "https://registry.npmjs.org/-/package/@linagora%2f<name>/collaborators"
+# {"npmadminlinagora":"write","<you>":"write"}
 ```
 
 If the page still answers `Not Found` while your account is listed, sign out of
@@ -100,7 +106,9 @@ On `https://www.npmjs.com/package/@linagora/<name>/access`, in
 
 Check **Allow npm publish**, leave **Allow npm dist-tag** unchecked, then save.
 The connection shows **Pending validation** until the first publication through
-it.
+it. npm gives two days to validate it with a publication (the page shows the
+deadline), so add it shortly before the release. If the deadline passed, delete
+the connection and add it again.
 
 All four values must match exactly. The environment name is lowercase `npm`, the
 GitHub environment the `Publish` job runs in (it is limited to `main`).
@@ -121,5 +129,5 @@ Check that the version was published through OIDC: `_npmUser` must be
 `GitHub Actions`, with a `trustedPublisher` entry.
 
 ```bash
-npm view @linagora/<name> --json | jq '._npmUser'
+curl -s https://registry.npmjs.org/@linagora/<name>/latest | jq '._npmUser'
 ```
