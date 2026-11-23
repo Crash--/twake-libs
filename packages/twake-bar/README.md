@@ -71,3 +71,22 @@ Each part is optional. With a `fallback`, the account menu always shows, with th
 ### Hooks
 
 `useSdk()`, `useSdkStatus()` and `useSdkData(load)` are exported for host components that need the same platform data.
+
+## TwakeRail
+
+The vertical navigation between the apps, for a host that lays the apps out with a rail at the left of the page on desktop. It keeps `TwakeBar` on small screens.
+
+```tsx
+import { TwakeRail } from '@linagora/twake-bar'
+
+const Layout = ({ children }: { children: React.ReactNode }) => (
+  <Box sx={{ display: 'flex', height: '100vh' }}>
+    <TwakeRail current="mail" onLogOut={logOut} />
+    <main>{children}</main>
+  </Box>
+)
+```
+
+- One link per app of `apps` (registry slugs, `TWAKE_RAIL_APPS` by default: space, drive, chat, mail, calendar, tasks) that the platform has, in that order. A link opens the app in the same tab, and `current` marks the app the rail is in.
+- Then the apps menu, help and account menus, which open beside the rail.
+- `prerender`: the apps Chrome and Edge prerender when the pointer rests on their link (Speculation Rules), none by default. List an app only when its HTML answers with `Supports-Loading-Mode: credentialed-prerender` and its sign-in waits for the user to reach it, as `@linagora/twake-oidc` does from the version with `waitForActivation()`.
