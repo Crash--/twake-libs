@@ -67,6 +67,20 @@ describe('TwakeBar', () => {
     )
   })
 
+  it('leaves the menus to a rail when the host asks', async () => {
+    renderBar(makeSdk({ apps: [makeApp({ slug: 'home' })] }), {
+      withMenus: false,
+      slots: { search: <input aria-label="Search" /> }
+    })
+
+    expect(screen.getByRole('textbox', { name: 'Search' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByTestId('twake-bar-home')).toHaveAttribute('href')
+    )
+    expect(screen.queryByTestId('twake-bar-apps-button')).toBe(null)
+    expect(screen.queryByTestId('twake-bar-user-button')).toBe(null)
+  })
+
   it('lets the host replace the left side', () => {
     renderBar(makeSdk(), { slots: { left: <span>Custom left</span> } })
 
@@ -123,6 +137,23 @@ describe('TwakeBar', () => {
       await user.click(screen.getByTestId('twake-bar-user-button'))
       expect(await screen.findByText('alice@example.com')).toBeInTheDocument()
       await user.click(screen.getByTestId('twake-bar-logout'))
+      expect(onLogOut).toHaveBeenCalledTimes(1)
+    })
+
+    it('keeps the account and its log out on a page with a rail', async () => {
+      const onLogOut = vi.fn()
+      const user = userEvent.setup()
+      renderWithSdk(
+        <TwakeBar
+          app={APP}
+          onLogOut={onLogOut}
+          fallback={FALLBACK}
+          withMenus={false}
+        />
+      )
+
+      await user.click(screen.getByTestId('twake-bar-user-button'))
+      await user.click(await screen.findByTestId('twake-bar-logout'))
       expect(onLogOut).toHaveBeenCalledTimes(1)
     })
 

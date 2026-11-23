@@ -9,6 +9,7 @@
     "storage": "Almacenamiento",
     "gbAvailable": "GB disponibles",
     "emailDomainNotActive": "Correo no activo",
-    "logOut": "Cerrar sesión"
+    "logOut": "Cerrar sesión",
+    "rail": "Aplicaciones de Twake"
   }
 }

@@ -9,6 +9,7 @@
     "storage": "Хранилище",
     "gbAvailable": "ГБ доступно",
     "emailDomainNotActive": "Электронная почта неактивна",
-    "logOut": "Выйти"
+    "logOut": "Выйти",
+    "rail": "Приложения Twake"
   }
 }
