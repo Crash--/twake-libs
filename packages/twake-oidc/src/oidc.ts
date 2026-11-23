@@ -1,5 +1,6 @@
 import * as client from 'openid-client'
 
+import { waitForActivation } from './prerender'
 import {
   endLocalSession,
   getIdToken,
@@ -244,6 +245,7 @@ export async function exchangeCode(
  * completeLogin finishes the sign-in. Framed, the SSO shows nothing.
  */
 export async function startLogin(): Promise<void> {
+  await waitForActivation()
   const silent = isFramed()
   const { url: authorizationUrl, codeVerifier, state } = await authorize(silent)
   const redirectState: RedirectState = {

@@ -25,4 +25,5 @@ export {
   type SignInResult
 } from './frame'
 export { resumeSession } from './resume'
+export { waitForActivation } from './prerender'
 export { readAuthConfig, type SsoSettings } from './settings'
