@@ -43,6 +43,11 @@ export interface TwakeBarProps {
   slots?: TwakeBarSlots
   showEmailDomainChip?: boolean
   fallback?: TwakeBarFallback
+  /**
+   * `false` leaves the menus of the platform to a TwakeRail beside the page;
+   * the `fallback` menus stay, the rail showing none off the platform
+   */
+  withMenus?: boolean
 }
 
 const Root = styled('header')(({ theme }) => ({
@@ -81,7 +86,8 @@ export const TwakeBar = ({
   onLogOut,
   slots = {},
   showEmailDomainChip,
-  fallback
+  fallback,
+  withMenus = true
 }: TwakeBarProps): React.ReactElement => {
   useBarLocales()
   const status = useSdkStatus()
@@ -93,7 +99,7 @@ export const TwakeBar = ({
       {slots.center}
       <Grow>{slots.search}</Grow>
       {slots.right}
-      {status === 'waiting' && (
+      {withMenus && status === 'waiting' && (
         <Skeleton
           variant="circular"
           width={isMobile ? 24 : 32}
@@ -101,7 +107,7 @@ export const TwakeBar = ({
           data-testid="twake-bar-avatar-skeleton"
         />
       )}
-      {status === 'ready' && (
+      {withMenus && status === 'ready' && (
         <Right>
           <HelpLink />
           <AppsMenu />

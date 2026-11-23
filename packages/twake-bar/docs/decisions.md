@@ -22,3 +22,10 @@ Decisions taken on `@linagora/twake-bar`, oldest first. Append only: a decision 
 - To decide: Crash-- (CTO), TAS-145
 - Why: the mockup shows both; neither has what it needs yet.
 - Scope: `TwakeRail`.
+
+## 2026-11-23, [UI] Pending: What happens to the top bar of an app with the rail?
+
+- Options: (a) `TwakeBar` stays with the app title and its search, help, apps and account move to the rail (`withMenus={false}`, as built); (b) no top bar, the app moves its search into its own page.
+- To decide: Crash-- (CTO), TAS-145
+- Why: the search of Mail and Tasks lives in the bar; the mockup does not say where it goes with the rail.
+- Scope: desktop pages with the rail.

@@ -67,6 +67,7 @@ Each part is optional. With a `fallback`, the account menu always shows, with th
 - `slots`: `left` replaces the home button and title, `center`, `search` fills the middle, `right` is rendered before the menus
 - `showEmailDomainChip`: warns when the organization has no mail app yet (default `true`)
 - `fallback`: `helpLink`, `apps` and `user` shown off the platform, and `userMenu` to replace the account menu there
+- `withMenus`: `false` leaves out the help, apps and account menus of the platform, for a page with a `TwakeRail` that shows them (default `true`). The `fallback` menus stay off the platform, where the rail shows none
 
 ### Hooks
 
