@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { Icon, Mosaic } from '@linagora/twake-icons'
 import { ButtonBase, Skeleton, Typography, styled } from '@linagora/twake-mui'
@@ -6,13 +6,13 @@ import type { App, Sdk, Shortcut } from '@linagora/twake-sdk'
 import { useI18n } from 'twake-i18n'
 
 import { BarMenu } from './BarMenu'
-import { useSdk } from './SdkProvider'
 import {
   getAppDisplayName,
   getEntrypoints,
   sortApps,
   type AppEntrypoint
 } from './helpers'
+import { useAppIconURL } from './useAppIconURL'
 import { useBarLocales } from './useBarLocales'
 import { useSdkData } from './useSdkData'
 
@@ -150,24 +150,7 @@ const Item = ({
 )
 
 const AppIcon = ({ slug }: { slug: string }): React.ReactElement => {
-  const sdk = useSdk()
-  const [src, setSrc] = useState<string | null>(null)
-
-  useEffect(() => {
-    let isCurrent = true
-    const run = async (): Promise<void> => {
-      try {
-        const url = await sdk.getAppIconURL(slug)
-        if (isCurrent) setSrc(url)
-      } catch {
-        // The skeleton stays
-      }
-    }
-    void run()
-    return (): void => {
-      isCurrent = false
-    }
-  }, [sdk, slug])
+  const src = useAppIconURL(slug)
 
   return src ? (
     <ItemIcon src={src} alt="" />
