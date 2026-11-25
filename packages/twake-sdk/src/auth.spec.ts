@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { exchangeIdToken, refreshCredentials, SdkAuthError } from './auth'
-import { CREDENTIALS, PLATFORM_URL, bodyOf, json, stubFetch } from './testUtils'
+import { exchangeIdToken, refreshCredentials, SdkAuthError } from './auth.js'
+import {
+  CREDENTIALS,
+  PLATFORM_URL,
+  bodyOf,
+  json,
+  stubFetch
+} from './testUtils.js'
 
 afterEach(() => vi.unstubAllGlobals())
 
