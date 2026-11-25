@@ -1,7 +1,7 @@
 import { feedbackIntegration } from '@sentry/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { attachFeedback, makeFeedbackIntegration } from './sentry'
+import { attachFeedback, makeFeedbackIntegration } from './sentry.js'
 
 vi.mock('@sentry/react', () => ({
   feedbackIntegration: vi.fn((options: unknown) => ({ options }))

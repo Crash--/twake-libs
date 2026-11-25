@@ -4,7 +4,7 @@ import { Comment, Icon } from '@linagora/twake-icons'
 import { Fab, Menu, MenuItem, Tooltip, styled } from '@linagora/twake-mui'
 import { useI18n } from 'twake-i18n'
 
-import { getFeedbackButtonStrings, getFeedbackLabels } from './locales'
+import { getFeedbackButtonStrings, getFeedbackLabels } from './locales.js'
 import {
   DRAG_THRESHOLD,
   EDGE_MARGIN,
@@ -16,8 +16,8 @@ import {
   writePosition,
   type FeedbackPosition,
   type FeedbackSide
-} from './position'
-import { useFormInset } from './useFormInset'
+} from './position.js'
+import { useFormInset } from './useFormInset.js'
 
 /** Time in ms a finger must stay still on the button to open its menu */
 const LONG_PRESS_DELAY = 500

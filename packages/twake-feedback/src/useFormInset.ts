@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { getFormInset, type FeedbackPosition } from './position'
+import { getFormInset, type FeedbackPosition } from './position.js'
 
 export const FORM_STYLE_ID = 'twake-feedback-position'
 
