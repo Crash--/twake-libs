@@ -24,3 +24,10 @@ Categories: UX, UI, Product, Architecture, Infra, Tech.
 - Decided by: Crash-- (CTO), 2026-11-25, on [linagora/twake-libs#91](https://github.com/linagora/twake-libs/pull/91)
 - Why: the user acknowledges what is new rather than dismissing a window.
 - Scope: every app that passes `seenNotesKey`.
+
+## 2026-11-25, [UX] A link to every change under the notes
+
+- Decision: with `notesUrl`, the dialog shows a « See everything that's new » link (« Voir toutes les nouveautés ») under the notes, in both dialogs, opened in a new tab. The app passes the URL; nothing in `/version.json`, since the page it points to may only exist after the release is deployed.
+- Decided by: Crash-- (CTO), 2026-11-25
+- Why: the dialog keeps a few lines; the full list lives elsewhere.
+- Scope: every app that passes `notesUrl`.
