@@ -1,4 +1,4 @@
 export {
   DrivePickerSkeleton,
   type DrivePickerSkeletonProps
-} from './DrivePickerSkeleton'
+} from './DrivePickerSkeleton.js'

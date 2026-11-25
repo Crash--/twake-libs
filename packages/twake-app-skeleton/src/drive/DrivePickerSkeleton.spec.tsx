@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { TwakeMuiThemeProvider } from '@linagora/twake-mui'
 
-import { DrivePickerSkeleton } from './DrivePickerSkeleton'
+import { DrivePickerSkeleton } from './DrivePickerSkeleton.js'
 
 const renderSkeleton = (): HTMLElement => {
   render(
