@@ -5,16 +5,16 @@ import { ButtonBase, Skeleton, Typography, styled } from '@linagora/twake-mui'
 import type { App, Sdk, Shortcut } from '@linagora/twake-sdk'
 import { useI18n } from 'twake-i18n'
 
-import { BarMenu } from './BarMenu'
-import { useSdk } from './SdkProvider'
+import { BarMenu } from './BarMenu.js'
+import { useSdk } from './SdkProvider.js'
 import {
   getAppDisplayName,
   getEntrypoints,
   sortApps,
   type AppEntrypoint
-} from './helpers'
-import { useBarLocales } from './useBarLocales'
-import { useSdkData } from './useSdkData'
+} from './helpers.js'
+import { useBarLocales } from './useBarLocales.js'
+import { useSdkData } from './useSdkData.js'
 
 /** An app of the menu off the platform, served by the host */
 export interface BarFallbackApp {
