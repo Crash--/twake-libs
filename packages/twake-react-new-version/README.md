@@ -20,7 +20,7 @@ Each build has its own id (the commit in CI, for instance). The app:
 
 - writes it in the bundle, so the running tab knows its own build;
 - serves it at `/version.json` as `{ "build": "<id>" }`, with `Cache-Control: no-store`;
-- optionally adds patch notes: `{ "build": "<id>", "notes": { "en": "- Faster search\n- Dark mode", "fr": "…" } }`, one text per language code. Entries that are not non-empty strings are ignored, and `notes` is ignored when it is not an object or has no usable entry.
+- optionally adds patch notes: `{ "build": "<id>", "notes": { "en": "- Faster search\n- Dark mode", "fr": "…" } }`, one text per language code. Entries that are not strings, or only blank space, are ignored, and `notes` is ignored when it is not an object or has no usable entry.
 
 The id must be in the bundle, not read at runtime from a file served next to it: during a rollout a tab may get the bundle of the old server and that file from the new one, and would never be offered a reload.
 
