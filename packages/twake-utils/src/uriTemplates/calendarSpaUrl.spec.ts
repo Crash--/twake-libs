@@ -4,7 +4,7 @@ import {
   resolveCalendarSpaUrl,
   buildCalendarEventUrl,
   generateCalendarEventUrl
-} from './calendarSpaUrl'
+} from './calendarSpaUrl.js'
 
 describe('resolveCalendarSpaUrl', () => {
   it('resolves a plain URL template', () => {

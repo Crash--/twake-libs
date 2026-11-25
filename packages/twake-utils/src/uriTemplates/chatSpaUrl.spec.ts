@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveChatSpaUrl } from './chatSpaUrl'
+import { resolveChatSpaUrl } from './chatSpaUrl.js'
 
 const SIMPLE_TEMPLATE = 'http://chat.e2e.local/#/chat/@{target}'
 const SERVER_TEMPLATE =
