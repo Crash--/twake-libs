@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-app-skeleton",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Loading skeletons of Twake applications, shown by the apps that embed them while they load (the Twake Drive picker first)",
   "author": "Twake",
   "license": "MIT",
