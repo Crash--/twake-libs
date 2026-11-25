@@ -47,7 +47,8 @@ describe('fetchServedVersion', () => {
     ['null', null],
     ['an empty object', {}],
     ['entries that are not strings', { en: 3, fr: ['x'] }],
-    ['empty entries', { en: '', fr: '' }]
+    ['empty entries', { en: '', fr: '' }],
+    ['entries made of blank space only', { en: '  \n', fr: '\r\n\t' }]
   ])('has no notes when notes are %s', async (_, notes) => {
     expect(
       await fetchServedVersion(undefined, json({ build: 'b2', notes }))
@@ -57,7 +58,7 @@ describe('fetchServedVersion', () => {
   it('ignores the entries that are not usable strings, keeps the others', async () => {
     const served = await fetchServedVersion(
       undefined,
-      json({ build: 'b2', notes: { en: '- one', fr: '', de: 4 } })
+      json({ build: 'b2', notes: { en: '- one', fr: '', it: ' \n', de: 4 } })
     )
 
     expect(served).toEqual({ build: 'b2', notes: { en: '- one' } })
