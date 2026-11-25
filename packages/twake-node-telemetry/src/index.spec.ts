@@ -2,7 +2,7 @@ import type { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { createLogger, genReqId, hashEmail } from './index'
+import { createLogger, genReqId, hashEmail } from './index.js'
 
 function logLine(
   log: (logger: ReturnType<typeof createLogger>) => void
