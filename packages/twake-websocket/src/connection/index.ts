@@ -1,11 +1,11 @@
-export { createWebSocketConnection } from './createConnection'
+export { createWebSocketConnection } from './createConnection.js'
 export type {
   WebSocketWithCleanup,
   WebSocketCallbacks,
   CreateConnectionOptions
-} from './types'
+} from './types.js'
 export {
   registerWebSocketState,
   getWebSocketState,
   setWebSocketConnecting
-} from './webSocketState'
+} from './webSocketState.js'

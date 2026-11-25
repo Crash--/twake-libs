@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 
-import { fetchWebSocketTicket } from './fetchTicket'
-import { WebSocketTicket } from './types'
+import { fetchWebSocketTicket } from './fetchTicket.js'
+import { WebSocketTicket } from './types.js'
 
 const mockTicket: WebSocketTicket = {
   clientAddress: '127.0.0.1',

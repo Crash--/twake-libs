@@ -1,9 +1,12 @@
 import type { KyInstance } from 'ky'
 
-import { buildWebSocketUrl } from '../api/buildUrl'
-import { fetchWebSocketTicket } from '../api/fetchTicket'
-import { createWebSocketConnection } from '../connection/createConnection'
-import { WebSocketCallbacks, WebSocketWithCleanup } from '../connection/types'
+import { buildWebSocketUrl } from '../api/buildUrl.js'
+import { fetchWebSocketTicket } from '../api/fetchTicket.js'
+import { createWebSocketConnection } from '../connection/createConnection.js'
+import {
+  WebSocketCallbacks,
+  WebSocketWithCleanup
+} from '../connection/types.js'
 
 export async function establishWebSocketConnection(
   baseUrl: string,

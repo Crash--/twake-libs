@@ -12,14 +12,14 @@ import {
   WebSocketWithCleanup,
   registerWebSocketState,
   setWebSocketConnecting
-} from '../connection'
+} from '../connection/index.js'
 import {
   PingCleanup,
   closeWebSocketConnection,
   establishWebSocketConnection,
   setupWebSocketPing
-} from '../lifecycle'
-import { useWebSocketReconnect } from './useReconnect'
+} from '../lifecycle/index.js'
+import { useWebSocketReconnect } from './useReconnect.js'
 
 type EstablishParams = Parameters<typeof establishWebSocketConnection>
 export type WebSocketUrl = EstablishParams[0]
