@@ -5,6 +5,6 @@ import { defineConfig } from 'vitest/config'
 // one worker pool instead of running package after package.
 export default defineConfig({
   test: {
-    projects: ['packages/*']
+    projects: ['packages/*', 'scripts']
   }
 })
