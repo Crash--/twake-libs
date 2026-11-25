@@ -1,7 +1,7 @@
 {
   "name": "@linagora/twake-crypto-utils",
   "type": "module",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Isomorphic cryptography helpers for Twake services: scrypt, PBKDF2, AES-CBC/GCM, RSA keypair generation, HMAC-SHA256, SHA-256, JWT decode, and secure random helpers",
   "author": "Twake",
   "license": "MIT",
