@@ -1,0 +1,12 @@
+{
+  "extends": "cozy-tsconfig",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": false,
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  }
+}
