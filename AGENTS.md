@@ -63,14 +63,15 @@ For each changed package:
    - `"name": "@linagora/<name>"`
    - `"publishConfig": { "access": "public", "provenance": true }`
    - `"files": ["dist", "CHANGELOG.md", "README.md"]`
-3. No per-package config needed — the root `.releaserc.json` applies to all workspaces
+3. No per-package release config needed — the root `.releaserc.json` applies to all workspaces
 4. Create `packages/<name>/docs/decisions.md` with the same header as the other packages
+5. Before the first release, a maintainer must add the npm trusted publisher for the package: see `PUBLISHING.md`. Without it, CI fails on that package with `ENONPMTOKEN`
 
 ## CI/CD Notes
 
 - **Runs on**: PRs and push to main
 - **Order**: install → lint → test → build → release (main only)
-- **npm auth**: OIDC trusted publishing, no npm token. The `release` job runs in the `npm` GitHub environment (main only). A new package must first be published by hand, then get a trusted publisher on npmjs.com: `linagora` / `twake-libs` / `ci-cd.yml` / environment `npm`, with "Allow npm publish" checked
+- **npm auth**: OIDC trusted publishing, no npm token. The `release` job runs in the `npm` GitHub environment (main only). A new package needs a one-time npm setup, see `PUBLISHING.md`
 - **Uses**: `secrets.GITHUB_TOKEN` (auto-provided, no setup needed)
 
 ## Commits

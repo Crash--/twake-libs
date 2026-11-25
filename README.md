@@ -7,6 +7,7 @@ Monorepo containing shared libs packages for Twake applications.
 ```
 twake-libs/
 ├── packages/
+│   ├── twake-app-skeleton/ # Loading skeletons of Twake apps (Drive picker)
 │   ├── twake-crypto-utils/ # Cryptography helpers on the Web Crypto API
 │   ├── twake-e2e/          # Fake SSO and sign-in helpers for end-to-end suites
 │   ├── twake-feedback/     # Draggable feedback button and Sentry feedback wiring
@@ -105,13 +106,14 @@ Create your package in `packages/<name>/` with the required `package.json` field
   "name": "@linagora/your-new-package",
   "version": "0.0.0",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": ["dist", "CHANGELOG.md", "README.md"]
 }
 ```
 
-No additional release config needed — multi-semantic-release auto-detects new packages from the workspaces.
+multi-semantic-release auto-detects new packages from the workspaces, but npm must trust this repository before CI can publish a new package. Follow [Publishing a new package to npm](PUBLISHING.md) once per package, or its first release fails with `ENONPMTOKEN`.
 
 ## License
 
