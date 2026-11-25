@@ -1,7 +1,7 @@
 import { type MutableRefObject } from 'react'
 
-import type { WebSocketWithCleanup } from '../connection/types'
-import { getWebSocketState } from '../connection/webSocketState'
+import type { WebSocketWithCleanup } from '../connection/types.js'
+import { getWebSocketState } from '../connection/webSocketState.js'
 
 const DEFAULT_TIMEOUT_MS = 10_000
 let inFlightCheck: Promise<void> | null = null

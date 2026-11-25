@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { getRetryDelay } from './getRetryDelay'
+import { getRetryDelay } from './getRetryDelay.js'
 
 describe('getRetryDelay', () => {
   const config = { initialDelay: 1000, maxDelay: 30000 }
