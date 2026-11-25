@@ -1,7 +1,7 @@
 export {
   NewVersionDialog,
   type NewVersionDialogProps
-} from './NewVersionDialog'
+} from './NewVersionDialog.js'
 export {
   CHECK_VERSION_EVENT,
   fetchServedBuild,
@@ -10,4 +10,4 @@ export {
   notesFor,
   requestVersionCheck,
   type ServedVersion
-} from './version'
+} from './version.js'

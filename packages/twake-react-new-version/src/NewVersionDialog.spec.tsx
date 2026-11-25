@@ -1,13 +1,13 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from '@testing-library/user-event'
 import React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { TwakeMuiThemeProvider } from '@linagora/twake-mui'
 import { I18n } from 'twake-i18n'
 
-import { NewVersionDialog } from './NewVersionDialog'
-import { requestVersionCheck } from './version'
+import { NewVersionDialog } from './NewVersionDialog.js'
+import { requestVersionCheck } from './version.js'
 
 const renderDialog = ({
   served = 'b2',

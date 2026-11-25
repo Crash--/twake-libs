@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { fetchServedBuild, fetchServedVersion, notesFor } from './version'
+import { fetchServedBuild, fetchServedVersion, notesFor } from './version.js'
 
 const answering =
   (body: string, init: ResponseInit = {}): typeof fetch =>
