@@ -4,7 +4,7 @@ import { Skeleton, styled, useBreakpoints } from '@linagora/twake-mui'
 
 import { AppsMenu, FallbackAppsMenu, type BarFallbackApp } from './AppsMenu'
 import { BarLeft, type BarApp } from './BarLeft'
-import { HelpButton, HelpLink } from './HelpLink'
+import { HelpLink, HelpMenu, type TwakeBarHelpItem } from './HelpLink'
 import { useSdkStatus } from './SdkProvider'
 import { FallbackUserMenu, UserMenu, type BarFallbackUser } from './UserMenu'
 import { useBarLocales } from './useBarLocales'
@@ -43,6 +43,11 @@ export interface TwakeBarProps {
   slots?: TwakeBarSlots
   showEmailDomainChip?: boolean
   fallback?: TwakeBarFallback
+  /**
+   * The help of the host (its support, a bug report): with the help page
+   * of the platform behind one "?", a menu when there are several entries
+   */
+  helpItems?: TwakeBarHelpItem[]
 }
 
 const Root = styled('header')(({ theme }) => ({
@@ -81,7 +86,8 @@ export const TwakeBar = ({
   onLogOut,
   slots = {},
   showEmailDomainChip,
-  fallback
+  fallback,
+  helpItems
 }: TwakeBarProps): React.ReactElement => {
   useBarLocales()
   const status = useSdkStatus()
@@ -103,7 +109,7 @@ export const TwakeBar = ({
       )}
       {status === 'ready' && (
         <Right>
-          <HelpLink />
+          <HelpLink items={helpItems} />
           <AppsMenu />
           <UserMenu
             onLogOut={onLogOut}
@@ -113,7 +119,7 @@ export const TwakeBar = ({
       )}
       {status === 'public' && fallback && (
         <Right>
-          {fallback.helpLink && <HelpButton href={fallback.helpLink} />}
+          <HelpMenu helpLink={fallback.helpLink || null} items={helpItems} />
           {fallback.apps && fallback.apps.length > 0 && (
             <FallbackAppsMenu apps={fallback.apps} />
           )}
