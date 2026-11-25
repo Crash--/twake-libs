@@ -1,5 +1,5 @@
-export { createSdk, SdkError, WAITING_TIMEOUT, type Sdk } from './sdk'
-export { SdkAuthError } from './auth'
+export { createSdk, SdkError, WAITING_TIMEOUT, type Sdk } from './sdk.js'
+export { SdkAuthError } from './auth.js'
 export type {
   App,
   Context,
@@ -13,4 +13,4 @@ export type {
   SdkOptions,
   SdkStatus,
   Shortcut
-} from './types'
+} from './types.js'
