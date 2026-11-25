@@ -5,7 +5,7 @@ import {
   getIdToken,
   setTokenSet,
   type TokenSet
-} from './session'
+} from './session.js'
 
 export interface AuthConfig {
   /** Issuer URL of the SSO, where its OIDC discovery document lives */

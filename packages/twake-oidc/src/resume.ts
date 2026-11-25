@@ -1,11 +1,11 @@
-import { signInSilently, type SignInResult } from './frame'
+import { signInSilently, type SignInResult } from './frame.js'
 import {
   completeLogin,
   isFramed,
   isOnRedirectUri,
   LoginRequiredError,
   startLogin
-} from './oidc'
+} from './oidc.js'
 
 /**
  * Signs the user in when the application starts: finishes the sign-in the SSO

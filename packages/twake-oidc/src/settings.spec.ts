@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 
-import { readAuthConfig } from './settings'
+import { readAuthConfig } from './settings.js'
 
 it('reads the SSO settings of /env.js', () => {
   expect(

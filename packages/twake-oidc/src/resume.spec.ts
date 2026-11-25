@@ -1,9 +1,9 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 
-import * as frame from './frame'
-import * as oidc from './oidc'
-import { resumeSession } from './resume'
-import { setUpBrowser } from './testUtils'
+import * as frame from './frame.js'
+import * as oidc from './oidc.js'
+import { resumeSession } from './resume.js'
+import { setUpBrowser } from './testUtils.js'
 
 const signedIn = {
   tokenSet: { access_token: 'token' },

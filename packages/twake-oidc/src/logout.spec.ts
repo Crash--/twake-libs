@@ -12,12 +12,12 @@ vi.mock('openid-client', async importOriginal => {
 })
 
 describe('OIDC Session & Logout', () => {
-  let endLocalSession: typeof import('./session').endLocalSession
-  let getAccessToken: typeof import('./session').getAccessToken
-  let onSessionEndedElsewhere: typeof import('./session').onSessionEndedElsewhere
-  let setTokenSet: typeof import('./session').setTokenSet
-  let configureAuth: typeof import('./oidc').configureAuth
-  let logOut: typeof import('./oidc').logOut
+  let endLocalSession: typeof import('./session.js').endLocalSession
+  let getAccessToken: typeof import('./session.js').getAccessToken
+  let onSessionEndedElsewhere: typeof import('./session.js').onSessionEndedElsewhere
+  let setTokenSet: typeof import('./session.js').setTokenSet
+  let configureAuth: typeof import('./oidc.js').configureAuth
+  let logOut: typeof import('./oidc.js').logOut
   let assignMock: ReturnType<typeof vi.fn>
 
   beforeEach(async () => {
@@ -28,8 +28,8 @@ describe('OIDC Session & Logout', () => {
       getAccessToken,
       onSessionEndedElsewhere,
       setTokenSet
-    } = await import('./session'))
-    ;({ configureAuth, logOut } = await import('./oidc'))
+    } = await import('./session.js'))
+    ;({ configureAuth, logOut } = await import('./oidc.js'))
 
     configureAuth({
       ssoUrl: 'https://sso:5554',

@@ -1,4 +1,4 @@
-import type { AuthConfig } from './oidc'
+import type { AuthConfig } from './oidc.js'
 
 const SETTINGS = [
   'SSO_BASE_URL',
