@@ -1,5 +1,5 @@
-import { getAuthConfig, isFramed, isOnRedirectUri, startLogin } from './oidc'
-import { getAccessToken } from './session'
+import { getAuthConfig, isFramed, isOnRedirectUri, startLogin } from './oidc.js'
+import { getAccessToken } from './session.js'
 
 let isRedirectingToSso = false
 let hasReportedLoginRequired = false

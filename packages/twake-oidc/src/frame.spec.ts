@@ -6,10 +6,10 @@ import {
   signInSilently,
   signInWithPopup,
   type SignInResult
-} from './frame'
-import { LoginRequiredError } from './oidc'
-import { clearTokenSet, getAccessToken } from './session'
-import { setUpBrowser } from './testUtils'
+} from './frame.js'
+import { LoginRequiredError } from './oidc.js'
+import { clearTokenSet, getAccessToken } from './session.js'
+import { setUpBrowser } from './testUtils.js'
 
 vi.mock('openid-client', () => ({
   discovery: vi.fn().mockResolvedValue({}),

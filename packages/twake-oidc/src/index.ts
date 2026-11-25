@@ -7,7 +7,7 @@ export {
   LoginRequiredError,
   type AuthConfig,
   type LoginResult
-} from './oidc'
+} from './oidc.js'
 export {
   setTokenSet,
   getAccessToken,
@@ -16,13 +16,17 @@ export {
   endLocalSession,
   onSessionEndedElsewhere,
   type TokenSet
-} from './session'
-export { addAuthorization, fetchSignedIn, redirectOnUnauthorized } from './http'
+} from './session.js'
+export {
+  addAuthorization,
+  fetchSignedIn,
+  redirectOnUnauthorized
+} from './http.js'
 export {
   relayCallback,
   signInSilently,
   signInWithPopup,
   type SignInResult
-} from './frame'
-export { resumeSession } from './resume'
-export { readAuthConfig, type SsoSettings } from './settings'
+} from './frame.js'
+export { resumeSession } from './resume.js'
+export { readAuthConfig, type SsoSettings } from './settings.js'

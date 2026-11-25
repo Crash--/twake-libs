@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import { configureAuth, type AuthConfig } from './oidc'
+import { configureAuth, type AuthConfig } from './oidc.js'
 
 /** Browser globals the library reads, for tests running in node */
 export function setUpBrowser(
