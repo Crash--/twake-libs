@@ -10,9 +10,9 @@ import {
 import type { Sdk } from '@linagora/twake-sdk'
 import { useI18n } from 'twake-i18n'
 
-import { BarMenu } from './BarMenu'
-import { useBarLocales } from './useBarLocales'
-import { useSdkData } from './useSdkData'
+import { BarMenu } from './BarMenu.js'
+import { useBarLocales } from './useBarLocales.js'
+import { useSdkData } from './useSdkData.js'
 
 interface HelpItemBase {
   label: string

@@ -24,11 +24,11 @@ import {
 import type { Instance, Sdk } from '@linagora/twake-sdk'
 import { useI18n } from 'twake-i18n'
 
-import { BarMenu } from './BarMenu'
-import { useSdk } from './SdkProvider'
-import { formatAvailableGigabytes } from './helpers'
-import { useBarLocales } from './useBarLocales'
-import { useSdkData } from './useSdkData'
+import { BarMenu } from './BarMenu.js'
+import { useSdk } from './SdkProvider.js'
+import { formatAvailableGigabytes } from './helpers.js'
+import { useBarLocales } from './useBarLocales.js'
+import { useSdkData } from './useSdkData.js'
 
 const SETTINGS_SLUG = 'settings'
 

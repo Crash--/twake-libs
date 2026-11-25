@@ -2,12 +2,12 @@ import React from 'react'
 
 import { Skeleton, styled, useBreakpoints } from '@linagora/twake-mui'
 
-import { AppsMenu, FallbackAppsMenu, type BarFallbackApp } from './AppsMenu'
-import { BarLeft, type BarApp } from './BarLeft'
-import { HelpLink, HelpMenu, type TwakeBarHelpItem } from './HelpLink'
-import { useSdkStatus } from './SdkProvider'
-import { FallbackUserMenu, UserMenu, type BarFallbackUser } from './UserMenu'
-import { useBarLocales } from './useBarLocales'
+import { AppsMenu, FallbackAppsMenu, type BarFallbackApp } from './AppsMenu.js'
+import { BarLeft, type BarApp } from './BarLeft.js'
+import { HelpLink, HelpMenu, type TwakeBarHelpItem } from './HelpLink.js'
+import { useSdkStatus } from './SdkProvider.js'
+import { FallbackUserMenu, UserMenu, type BarFallbackUser } from './UserMenu.js'
+import { useBarLocales } from './useBarLocales.js'
 
 export const TWAKE_BAR_HEIGHT = '3rem'
 
