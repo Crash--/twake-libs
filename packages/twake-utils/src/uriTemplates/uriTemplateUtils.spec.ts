@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveUriTemplate } from './uriTemplateUtils'
+import { resolveUriTemplate } from './uriTemplateUtils.js'
 
 describe('resolveUriTemplate', () => {
   const fqdn = 'tmle.stg.lin-saas.com'

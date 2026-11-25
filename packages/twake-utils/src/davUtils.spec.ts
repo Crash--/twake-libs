@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { encodeDavSegment } from './davUtils'
+import { encodeDavSegment } from './davUtils.js'
 
 describe('encodeDavSegment', () => {
   it.each([

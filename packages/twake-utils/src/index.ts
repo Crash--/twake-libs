@@ -1,16 +1,16 @@
 export {
   resolveUriTemplate,
   type UriTemplateContext
-} from './uriTemplates/uriTemplateUtils'
+} from './uriTemplates/uriTemplateUtils.js'
 export {
   resolveMailSpaUrl,
   buildMailComposerUrl,
   generateMailComposerUrl
-} from './uriTemplates/mailSpaUrl'
-export { resolveChatSpaUrl } from './uriTemplates/chatSpaUrl'
+} from './uriTemplates/mailSpaUrl.js'
+export { resolveChatSpaUrl } from './uriTemplates/chatSpaUrl.js'
 export {
   resolveCalendarSpaUrl,
   buildCalendarEventUrl,
   generateCalendarEventUrl
-} from './uriTemplates/calendarSpaUrl'
-export { encodeDavSegment } from './davUtils'
+} from './uriTemplates/calendarSpaUrl.js'
+export { encodeDavSegment } from './davUtils.js'
