@@ -5,7 +5,7 @@ import {
   fetchServedBuild,
   isNewBuild,
   requestVersionCheck
-} from './version'
+} from './version.js'
 
 const answering =
   (body: string, init: ResponseInit = {}): typeof fetch =>
