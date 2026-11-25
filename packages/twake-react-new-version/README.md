@@ -51,7 +51,7 @@ const ComposerForm = lazy(() =>
 
 ### When it checks
 
-Every 10 minutes, when the tab gets the focus, becomes visible again or comes back online, and on `requestVersionCheck()`. One check at a time, and at most one every 30 seconds but the ones `requestVersionCheck()` asks for: a framed app gets the focus at each click of its host. Never at mount: the page just loaded is the served build. An error, the network, or an answer that is not that JSON (a dev server answers `index.html`) is no new build.
+Every 10 minutes, when the tab gets the focus, becomes visible again or comes back online, and on `requestVersionCheck()`. One check at a time, and at most one every 30 seconds but the ones `requestVersionCheck()` asks for: a framed app gets the focus at each click of its host. Never at mount: the page just loaded is the served build (the notes at load, below, are the one read at mount). An error, the network, or an answer that is not that JSON (a dev server answers `index.html`) is no new build.
 
 ### What the user sees
 
@@ -60,6 +60,12 @@ A dialog titled « What's new in <appName> », with the text « An update just a
 ### Patch notes
 
 When `/version.json` has notes for the app language (else `en`), the dialog shows them instead of the usual text. Consecutive lines starting with `- ` are drawn as a list, any other line as text. The zone scrolls (`max-height` 60vh, `overflow-y: auto`) when the notes are long. Without usable notes, the usual text shows.
+
+### Notes at load
+
+With `seenNotesKey`, the dialog also reads `/version.json` once at mount. When it serves the running build with notes the browser has not seen yet, the same dialog shows them with a single « Got it » button (« Compris » in French; Escape and a click outside close it too). A tab open before a deployment still gets the update dialog first.
+
+The browser remembers the notes it has shown, in either dialog, in `localStorage` under `twake-new-version:<seenNotesKey>`: a fingerprint of the notes in every language, not the build. So the same notes in a new build, or in another language, do not show again; new notes do. A browser that has seen none yet shows the notes. A storage that cannot be read shows nothing.
 
 ### Props
 
@@ -70,6 +76,7 @@ When `/version.json` has notes for the app language (else `en`), the dialog show
 - `intervalMs`: time between two checks, 10 minutes by default
 - `image`: URL of a decorative illustration (`alt=""`), drawn centred in a full-width banner about 130 px high at the top of the dialog, `object-fit: contain`, cut at the bottom of the banner if taller; no banner without it
 - `imageBackground`: CSS colour of the banner, the theme's light primary colour by default (light and dark)
+- `seenNotesKey`: a key of the app, such as `twake-mail`, that turns on the notes at load; nothing is read at mount without it
 
 ### Texts
 

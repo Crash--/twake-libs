@@ -20,6 +20,7 @@ import fr from './locales/fr.json' with { type: 'json' }
 import it from './locales/it.json' with { type: 'json' }
 import ru from './locales/ru.json' with { type: 'json' }
 import vi from './locales/vi.json' with { type: 'json' }
+import { isUnseen, markSeen } from './seenNotes.js'
 import {
   CHECK_VERSION_EVENT,
   fetchServedVersion,
@@ -46,6 +47,12 @@ export interface NewVersionDialogProps {
   image?: string
   /** CSS colour of the banner, the theme's light primary by default */
   imageBackground?: string
+  /**
+   * Turns on the notes at load: a key of this app (such as `twake-mail`)
+   * under which the browser remembers the notes the user has seen. At load,
+   * notes of the running build not seen yet show in a dialog with « Got it »
+   */
+  seenNotesKey?: string
 }
 
 /**
@@ -151,7 +158,10 @@ const Banner = ({
  * « New version available »: offers a reload to a tab that runs an older
  * build than the served one. « Not now », Escape or a click outside decline
  * that build for the life of the tab: the dialog comes back only for a build
- * not declined yet. Mount it once, under the app's `I18n` and twake-mui theme
+ * not declined yet. With `seenNotesKey`, it also shows at load the notes of
+ * the running build the user has not seen, and remembers them as seen once
+ * shown in either dialog. Mount it once, under the app's `I18n` and twake-mui
+ * theme
  */
 export const NewVersionDialog = ({
   running,
@@ -160,14 +170,20 @@ export const NewVersionDialog = ({
   reload = (): void => window.location.reload(),
   intervalMs = 10 * MINUTE,
   image,
-  imageBackground
+  imageBackground,
+  seenNotesKey
 }: NewVersionDialogProps): React.ReactElement => {
   const { t, lang } = useI18n()
   useExtendI18n({ [lang]: locales[lang] ?? locales.en })
   const titleId = useId()
   const [offered, setOffered] = useState<ServedVersion | null>(null)
+  const [notesAtLoad, setNotesAtLoad] = useState<Record<string, string> | null>(
+    null
+  )
   // Read only in events, never drawn: a ref, not state
   const declined = useRef(new Set<string>())
+  // Once a newer build is offered, the notes of the running one are stale
+  const wasOffered = useRef(false)
 
   useVersionChecks(async () => {
     if (offered !== null) return
@@ -179,21 +195,65 @@ export const NewVersionDialog = ({
       isNewBuild(running, served.build) &&
       !declined.current.has(served.build)
     ) {
+      wasOffered.current = true
+      setNotesAtLoad(null)
       setOffered(served)
     }
   }, intervalMs)
 
-  const notes = notesFor(offered?.notes ?? null, lang)
+  // The one check at mount, for the notes of the build just loaded; the ref
+  // keeps it once per page while the app passes a new fetchServed each render
+  const fetchAtLoad = useRef(fetchServed)
+  useEffect(() => {
+    if (seenNotesKey === undefined) return
+    let isCurrent = true
+    void (async (): Promise<void> => {
+      const answer = await fetchAtLoad.current().catch(() => null)
+      if (
+        isCurrent &&
+        !wasOffered.current &&
+        typeof answer === 'object' &&
+        answer?.build === running &&
+        answer.notes !== null &&
+        isUnseen(seenNotesKey, answer.notes)
+      ) {
+        setNotesAtLoad(answer.notes)
+      }
+    })()
+    return (): void => {
+      isCurrent = false
+    }
+  }, [seenNotesKey, running])
+
+  const shownNotes = offered !== null ? offered.notes : notesAtLoad
+  const notes = notesFor(shownNotes, lang)
+
+  const markShownSeen = (): void => {
+    if (seenNotesKey !== undefined && shownNotes !== null && notes !== null) {
+      markSeen(seenNotesKey, shownNotes)
+    }
+  }
 
   const notNow = (): void => {
+    markShownSeen()
     if (offered !== null) declined.current.add(offered.build)
     setOffered(null)
   }
 
+  const closeNotes = (): void => {
+    markShownSeen()
+    setNotesAtLoad(null)
+  }
+
+  const reloadNow = (): void => {
+    markShownSeen()
+    reload()
+  }
+
   return (
     <Dialog
-      open={offered !== null}
-      onClose={notNow}
+      open={offered !== null || notes !== null}
+      onClose={offered !== null ? notNow : closeNotes}
       size="small"
       aria-labelledby={titleId}
       data-testid="new-version-dialog"
@@ -227,21 +287,34 @@ export const NewVersionDialog = ({
         )}
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'center' }}>
-        <Button
-          variant="text"
-          data-testid="new-version-not-now"
-          onClick={notNow}
-        >
-          {t('twakeNewVersion.notNow')}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          data-testid="new-version-reload"
-          onClick={reload}
-        >
-          {t('twakeNewVersion.reload')}
-        </Button>
+        {offered !== null ? (
+          <>
+            <Button
+              variant="text"
+              data-testid="new-version-not-now"
+              onClick={notNow}
+            >
+              {t('twakeNewVersion.notNow')}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              data-testid="new-version-reload"
+              onClick={reloadNow}
+            >
+              {t('twakeNewVersion.reload')}
+            </Button>
+          </>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            data-testid="new-version-got-it"
+            onClick={closeNotes}
+          >
+            {t('twakeNewVersion.gotIt')}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   )
