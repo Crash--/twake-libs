@@ -59,7 +59,7 @@ A dialog titled « What's new in <appName> », with the text « An update just a
 
 ### Patch notes
 
-When `/version.json` has notes for the app language (else `en`), the dialog shows them instead of the usual text. Consecutive lines starting with `- ` are drawn as a list, any other line as text. The zone scrolls (`max-height` 60vh, `overflow-y: auto`) when the notes are long. Without usable notes, the usual text shows.
+When `/version.json` has notes for the app language (else `en`), the dialog shows them instead of the usual text. Consecutive lines starting with `- ` are drawn as a list, any other line as text. The zone scrolls (`max-height` 60vh, `overflow-y: auto`) when the notes are long. Without usable notes, the usual text shows. With `notesUrl`, a « See everything that's new » link under the notes opens that page in a new tab.
 
 ### Notes at load
 
@@ -77,6 +77,7 @@ The browser remembers the notes it has shown, in either dialog, in `localStorage
 - `image`: URL of a decorative illustration (`alt=""`), drawn centred in a full-width banner about 130 px high at the top of the dialog, `object-fit: contain`, cut at the bottom of the banner if taller; no banner without it
 - `imageBackground`: CSS colour of the banner, the theme's light primary colour by default (light and dark)
 - `seenNotesKey`: a key of the app, such as `twake-mail`, that turns on the notes at load; nothing is read at mount without it
+- `notesUrl`: where to read every change, such as the release announcement; a link under the notes, none without it
 
 ### Texts
 

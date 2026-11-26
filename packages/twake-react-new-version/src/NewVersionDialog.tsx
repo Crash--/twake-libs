@@ -8,7 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  dialogTitleClasses
+  dialogTitleClasses,
+  Link
 } from '@linagora/twake-mui'
 import { useExtendI18n, useI18n } from 'twake-i18n'
 
@@ -53,6 +54,11 @@ export interface NewVersionDialogProps {
    * notes of the running build not seen yet show in a dialog with « Got it »
    */
   seenNotesKey?: string
+  /**
+   * Where to read every change, such as the release announcement: a « See
+   * all what's new » link under the notes, opened in a new tab
+   */
+  notesUrl?: string
 }
 
 /**
@@ -171,7 +177,8 @@ export const NewVersionDialog = ({
   intervalMs = 10 * MINUTE,
   image,
   imageBackground,
-  seenNotesKey
+  seenNotesKey,
+  notesUrl
 }: NewVersionDialogProps): React.ReactElement => {
   const { t, lang } = useI18n()
   useExtendI18n({ [lang]: locales[lang] ?? locales.en })
@@ -279,7 +286,21 @@ export const NewVersionDialog = ({
         }}
       >
         {notes !== null ? (
-          <PatchNotes notes={notes} titleId={titleId} />
+          <>
+            <PatchNotes notes={notes} titleId={titleId} />
+            {notesUrl !== undefined && (
+              <DialogContentText sx={{ textAlign: 'center', mt: 1.5 }}>
+                <Link
+                  href={notesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="new-version-notes-link"
+                >
+                  {t('twakeNewVersion.seeAll')}
+                </Link>
+              </DialogContentText>
+            )}
+          </>
         ) : (
           <DialogContentText sx={{ textAlign: 'center' }}>
             {t('twakeNewVersion.body').replace('%{appName}', appName)}
