@@ -1,3 +1,10 @@
+## @linagora/twake-feedback [1.1.4](https://github.com/linagora/twake-libs/compare/@linagora/twake-feedback@1.1.3...@linagora/twake-feedback@1.1.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-feedback:** Import the modules by their file so Node resolves them ([c300fe0](https://github.com/linagora/twake-libs/commit/c300fe03425045c6afe90faeb362ee1cf7d913ea))
+
 ## @linagora/twake-feedback [1.1.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-feedback@1.1.2...@linagora/twake-feedback@1.1.3) (2026-11-18)
 
 
