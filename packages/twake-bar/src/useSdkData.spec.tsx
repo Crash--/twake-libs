@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 
 import type { Sdk } from '@linagora/twake-sdk'
 
-import { makeSdk, renderWithSdk } from './testUtils'
-import { useSdkData } from './useSdkData'
+import { makeSdk, renderWithSdk } from './testUtils.js'
+import { useSdkData } from './useSdkData.js'
 
 const loadName = async (sdk: Sdk): Promise<string> =>
   (await sdk.getInstance()).public_name ?? ''

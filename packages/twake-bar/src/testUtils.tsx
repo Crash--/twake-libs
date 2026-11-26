@@ -6,7 +6,7 @@ import { TwakeMuiThemeProvider } from '@linagora/twake-mui'
 import type { App, Instance, Sdk, SdkStatus } from '@linagora/twake-sdk'
 import { I18n } from 'twake-i18n'
 
-import { SdkProvider } from './SdkProvider'
+import { SdkProvider } from './SdkProvider.js'
 
 export const PLATFORM_URL = 'https://alice.twake.example'
 

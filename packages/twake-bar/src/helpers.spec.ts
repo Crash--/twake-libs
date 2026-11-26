@@ -5,8 +5,8 @@ import {
   getAppDisplayName,
   getEntrypoints,
   sortApps
-} from './helpers'
-import { makeApp } from './testUtils'
+} from './helpers.js'
+import { makeApp } from './testUtils.js'
 
 describe('getAppDisplayName', () => {
   it('translates the name and drops the platform prefix', () => {

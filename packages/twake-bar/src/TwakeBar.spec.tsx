@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { TwakeBar } from './TwakeBar'
-import { INSTANCE, makeApp, makeSdk, renderWithSdk } from './testUtils'
+import { TwakeBar } from './TwakeBar.js'
+import { INSTANCE, makeApp, makeSdk, renderWithSdk } from './testUtils.js'
 
 const APP = { slug: 'calendar', name: 'Calendar', icon: 'https://cal/icon.svg' }
 
