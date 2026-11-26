@@ -1,3 +1,10 @@
+# @linagora/twake-bar [1.3.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.2.0...@linagora/twake-bar@1.3.0) (2026-11-26)
+
+
+### Features
+
+* **twake-bar:** Put the help of the host behind the one "?" of the bar ([867fb71](https://github.com/linagora/twake-libs/commit/867fb715d33e0978839c3b3179204f1dbe96ec35))
+
 # @linagora/twake-bar [1.2.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.1.3...@linagora/twake-bar@1.2.0) (2026-11-19)
 
 
