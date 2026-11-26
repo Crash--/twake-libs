@@ -1,3 +1,10 @@
+## @linagora/twake-bar [1.3.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.3.0...@linagora/twake-bar@1.3.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-bar:** Open only web pages of the help in a new tab ([43c17cc](https://github.com/linagora/twake-libs/commit/43c17cc521c403fa019069295a71d68f816cd608))
+
 # @linagora/twake-bar [1.3.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.2.0...@linagora/twake-bar@1.3.0) (2026-11-26)
 
 
