@@ -1,4 +1,4 @@
-import type { Credentials } from './types'
+import type { Credentials } from './types.js'
 
 interface TokenResponse {
   access_token: string

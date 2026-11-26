@@ -1,4 +1,4 @@
-import { exchangeIdToken, refreshCredentials, SdkAuthError } from './auth'
+import { exchangeIdToken, refreshCredentials, SdkAuthError } from './auth.js'
 import type {
   App,
   Context,
@@ -10,7 +10,7 @@ import type {
   SdkOptions,
   SdkStatus,
   Shortcut
-} from './types'
+} from './types.js'
 
 /** Default delay before a client left `waiting` falls back to `public` */
 export const WAITING_TIMEOUT = 30000
