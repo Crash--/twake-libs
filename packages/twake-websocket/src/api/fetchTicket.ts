@@ -1,6 +1,6 @@
 import type { KyInstance } from 'ky'
 
-import { WebSocketTicket } from './types'
+import { WebSocketTicket } from './types.js'
 
 export async function fetchWebSocketTicket(
   api: KyInstance,

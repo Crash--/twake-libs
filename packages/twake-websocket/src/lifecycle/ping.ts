@@ -1,4 +1,4 @@
-import { WebSocketWithCleanup } from '../connection/types'
+import { WebSocketWithCleanup } from '../connection/types.js'
 
 export interface PingConfig {
   /** Interval between ping attempts in milliseconds */

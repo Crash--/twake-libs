@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { buildWebSocketUrl } from './buildUrl'
+import { buildWebSocketUrl } from './buildUrl.js'
 
 describe('buildWebSocketUrl', () => {
   it('converts http to ws', () => {
