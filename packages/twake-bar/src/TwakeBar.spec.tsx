@@ -87,6 +87,105 @@ describe('TwakeBar', () => {
     expect(onLogOut).toHaveBeenCalledTimes(1)
   })
 
+  describe('help of the host', () => {
+    const SUPPORT = {
+      label: 'Get help or report a bug',
+      href: 'https://support.example/mail'
+    }
+
+    it('puts the help of the platform and the host behind one "?"', async () => {
+      const user = userEvent.setup()
+      renderBar(makeSdk({ context: { help_link: 'https://help.example' } }), {
+        helpItems: [SUPPORT]
+      })
+
+      const help = await screen.findByRole('button', { name: 'Help' })
+      expect(screen.queryAllByRole('link', { name: /help/i })).toHaveLength(0)
+      await user.click(help)
+
+      expect(
+        await screen.findByRole('menuitem', { name: 'Help center' })
+      ).toHaveAttribute('href', 'https://help.example')
+      expect(
+        screen.getByRole('menuitem', { name: 'Get help or report a bug' })
+      ).toHaveAttribute('href', 'https://support.example/mail')
+    })
+
+    it('runs the action of an entry and closes the menu', async () => {
+      const onClick = vi.fn()
+      const user = userEvent.setup()
+      renderBar(makeSdk({ context: { help_link: 'https://help.example' } }), {
+        helpItems: [{ label: 'Write to the support', onClick }]
+      })
+
+      await user.click(await screen.findByRole('button', { name: 'Help' }))
+      await user.click(
+        await screen.findByRole('menuitem', { name: 'Write to the support' })
+      )
+
+      expect(onClick).toHaveBeenCalledTimes(1)
+      await waitFor(() => expect(screen.queryByRole('menu')).toBe(null))
+    })
+
+    it('opens the only entry of the host at once', async () => {
+      renderBar(makeSdk({ context: {} }), { helpItems: [SUPPORT] })
+
+      expect(
+        await screen.findByRole('link', { name: 'Get help or report a bug' })
+      ).toHaveAttribute('href', 'https://support.example/mail')
+      expect(screen.queryByRole('button', { name: 'Help' })).toBe(null)
+    })
+
+    it('takes an empty help link for none', async () => {
+      renderBar(makeSdk({ context: { help_link: '' } }), {
+        helpItems: [SUPPORT]
+      })
+
+      expect(
+        await screen.findByRole('link', { name: 'Get help or report a bug' })
+      ).toHaveAttribute('href', 'https://support.example/mail')
+      expect(screen.queryByRole('button', { name: 'Help' })).toBe(null)
+    })
+
+    it('waits for the context before showing the help of the host', async () => {
+      let answer: (context: Record<string, unknown>) => void = () => undefined
+      const sdk = makeSdk()
+      const getContext = vi.spyOn(sdk, 'getContext').mockReturnValueOnce(
+        new Promise(resolve => {
+          answer = resolve
+        })
+      )
+      renderBar(sdk, { helpItems: [SUPPORT] })
+
+      await waitFor(() => expect(getContext).toHaveBeenCalled())
+      expect(
+        screen.queryByRole('link', { name: 'Get help or report a bug' })
+      ).toBe(null)
+      act(() => answer({ help_link: 'https://help.example' }))
+
+      expect(
+        await screen.findByRole('button', { name: 'Help' })
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByRole('link', { name: 'Get help or report a bug' })
+      ).toBe(null)
+    })
+
+    it('groups the help of the fallback and the host off the platform', () => {
+      renderWithSdk(
+        <TwakeBar
+          app={APP}
+          onLogOut={vi.fn()}
+          fallback={{ helpLink: 'https://support.example' }}
+          helpItems={[SUPPORT]}
+        />
+      )
+
+      expect(screen.getByRole('button', { name: 'Help' })).toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: 'Help' })).toBe(null)
+    })
+  })
+
   describe('off the platform', () => {
     const FALLBACK = {
       helpLink: 'https://support.example',
@@ -124,6 +223,15 @@ describe('TwakeBar', () => {
       expect(await screen.findByText('alice@example.com')).toBeInTheDocument()
       await user.click(screen.getByTestId('twake-bar-logout'))
       expect(onLogOut).toHaveBeenCalledTimes(1)
+    })
+
+    it('shows no help for an empty help link of the fallback', () => {
+      renderWithSdk(
+        <TwakeBar app={APP} onLogOut={vi.fn()} fallback={{ helpLink: '' }} />
+      )
+
+      expect(screen.queryByRole('link', { name: 'Help' })).toBe(null)
+      expect(screen.queryByRole('button', { name: 'Help' })).toBe(null)
     })
 
     it('keeps the log out without a user', async () => {

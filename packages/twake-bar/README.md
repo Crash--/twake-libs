@@ -67,6 +67,7 @@ Each part is optional. With a `fallback`, the account menu always shows, with th
 - `slots`: `left` replaces the home button and title, `center`, `search` fills the middle, `right` is rendered before the menus
 - `showEmailDomainChip`: warns when the organization has no mail app yet (default `true`)
 - `fallback`: `helpLink`, `apps` and `user` shown off the platform, and `userMenu` to replace the account menu there
+- `helpItems`: the help of the host (`label`, and `href` opened in a new tab or `onClick`), behind the same "?" as the help page of the platform (`help_link` of its context, or `fallback.helpLink`): one entry opens at once, several open a menu ("Help center" first, then the entries of the host). The host shows no help button of its own
 
 ### Hooks
 
