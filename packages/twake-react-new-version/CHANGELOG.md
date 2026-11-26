@@ -1,3 +1,16 @@
+# @linagora/twake-react-new-version [1.3.0](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.2.2...@linagora/twake-react-new-version@1.3.0) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-react-new-version:** Ignore notes made of blank space only ([7597dc9](https://github.com/linagora/twake-libs/commit/7597dc9258cfe72b55e6a4173018c142667a2926))
+
+
+### Features
+
+* **twake-react-new-version:** Link to every change under the notes ([0cc7234](https://github.com/linagora/twake-libs/commit/0cc7234de46eeffd5b2479bd93c0c15c21509472))
+* **twake-react-new-version:** Show the notes not seen yet at load ([770dadf](https://github.com/linagora/twake-libs/commit/770dadfb9c6abe536e080fbbc1100990fd81f7a3))
+
 ## @linagora/twake-react-new-version [1.2.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.2.1...@linagora/twake-react-new-version@1.2.2) (2026-11-26)
 
 
