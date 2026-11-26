@@ -22,7 +22,7 @@ const usableNotes = (value: unknown): Record<string, string> | null => {
   }
   const entries = Object.entries(value).filter(
     (entry): entry is [string, string] =>
-      typeof entry[1] === 'string' && entry[1] !== ''
+      typeof entry[1] === 'string' && entry[1].trim() !== ''
   )
   return entries.length > 0 ? Object.fromEntries(entries) : null
 }

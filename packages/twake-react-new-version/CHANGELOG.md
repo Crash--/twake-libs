@@ -1,3 +1,10 @@
+## @linagora/twake-react-new-version [1.2.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.2.1...@linagora/twake-react-new-version@1.2.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-react-new-version:** Import the modules by their file so Node resolves them ([76d9e09](https://github.com/linagora/twake-libs/commit/76d9e0955ba622599914c7dc3875aa0863b9dc55))
+
 ## @linagora/twake-react-new-version [1.2.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-react-new-version@1.2.0...@linagora/twake-react-new-version@1.2.1) (2026-11-21)
 
 

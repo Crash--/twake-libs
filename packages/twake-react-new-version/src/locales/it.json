@@ -3,6 +3,7 @@
     "title": "Novità di %{appName}",
     "body": "È appena arrivato un aggiornamento. Ricarica per ottenerlo.",
     "reload": "Ricarica",
-    "notNow": "Non ora"
+    "notNow": "Non ora",
+    "gotIt": "Ho capito"
   }
 }
