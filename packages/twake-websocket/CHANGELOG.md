@@ -1,3 +1,10 @@
+## @linagora/twake-websocket [1.2.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-websocket@1.2.1...@linagora/twake-websocket@1.2.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-websocket:** Import the modules by their file so Node resolves them ([751c05c](https://github.com/linagora/twake-libs/commit/751c05c34d1e5fe267cd8f3a0f206d50155abcf9))
+
 ## @linagora/twake-websocket [1.2.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-websocket@1.2.0...@linagora/twake-websocket@1.2.1) (2026-11-18)
 
 
