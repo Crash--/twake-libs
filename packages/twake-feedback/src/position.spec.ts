@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getFormInset, snapToEdge } from './position'
+import { getFormInset, snapToEdge } from './position.js'
 
 describe('snapToEdge', () => {
   const viewport = { width: 1000, height: 800 }

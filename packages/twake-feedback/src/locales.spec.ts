@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { FEEDBACK_LABEL_KEYS, getFeedbackLabels } from './locales'
+import { FEEDBACK_LABEL_KEYS, getFeedbackLabels } from './locales.js'
 
 describe('getFeedbackLabels', () => {
   it.each(['en', 'fr', 'de', 'es', 'it', 'ru', 'vi'])(
