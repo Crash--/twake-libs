@@ -19,7 +19,10 @@ interface HelpItemBase {
   'data-testid'?: string
 }
 
-/** An entry of the help of the host: a page, opened in a new tab, or an action */
+/**
+ * An entry of the help of the host: a web page, opened in a new tab,
+ * another link (`mailto:`, `tel:`), opened in the same tab, or an action
+ */
 export type TwakeBarHelpItem = HelpItemBase &
   ({ href: string; onClick?: never } | { onClick: () => void; href?: never })
 
@@ -40,6 +43,17 @@ const HelpIcon = (): React.ReactElement => (
 
 const newTab = { target: '_blank', rel: 'noopener noreferrer' } as const
 
+const WEB_PAGE = /^\s*https?:/i
+
+// Only web pages get a new tab: a `mailto:` or `tel:` link opened in one
+// leaves an empty tab in some browsers
+const linkProps = (
+  href: string
+): { component: 'a'; href: string; target?: '_blank'; rel?: string } =>
+  WEB_PAGE.test(href)
+    ? { component: 'a', href, ...newTab }
+    : { component: 'a', href }
+
 /**
  * The help of the bar, one "?": the help page of the platform and the
  * entries of the host. One entry opens at once, several in a menu.
@@ -56,12 +70,7 @@ export const HelpMenu = ({
 
   if (helpLink !== null && items.length === 0) {
     return (
-      <IconButton
-        component="a"
-        href={helpLink}
-        {...newTab}
-        aria-label={t('twakeBar.help')}
-      >
+      <IconButton {...linkProps(helpLink)} aria-label={t('twakeBar.help')}>
         <HelpIcon />
       </IconButton>
     )
@@ -72,7 +81,7 @@ export const HelpMenu = ({
       <IconButton
         {...(item.href === undefined
           ? { onClick: item.onClick }
-          : { component: 'a', href: item.href, ...newTab })}
+          : linkProps(item.href))}
         aria-label={item.label}
         data-testid={item['data-testid']}
       >
@@ -91,16 +100,14 @@ export const HelpMenu = ({
       {close => (
         <MenuList>
           {helpLink === null ? null : (
-            <MenuItem component="a" href={helpLink} {...newTab} onClick={close}>
+            <MenuItem {...linkProps(helpLink)} onClick={close}>
               <ListItemText primary={t('twakeBar.helpCenter')} />
             </MenuItem>
           )}
           {items.map((item, index) => (
             <MenuItem
               key={`${index}-${item.label}`}
-              {...(item.href === undefined
-                ? {}
-                : { component: 'a', href: item.href, ...newTab })}
+              {...(item.href === undefined ? {} : linkProps(item.href))}
               onClick={() => {
                 close()
                 item.onClick?.()
