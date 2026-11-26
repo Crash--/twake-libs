@@ -1,3 +1,10 @@
+## @linagora/twake-sdk [1.3.4](https://github.com/linagora/twake-libs/compare/@linagora/twake-sdk@1.3.3...@linagora/twake-sdk@1.3.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-sdk:** Import the modules by their file so Node resolves them ([3bf1a28](https://github.com/linagora/twake-libs/commit/3bf1a28814e2463f5ba755d80fc5e79c1bec44e7))
+
 ## @linagora/twake-sdk [1.3.3](https://github.com/linagora/twake-libs/compare/@linagora/twake-sdk@1.3.2...@linagora/twake-sdk@1.3.3) (2026-11-18)
 
 

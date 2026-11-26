@@ -1,3 +1,10 @@
+## @linagora/twake-oidc [1.4.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-oidc@1.4.1...@linagora/twake-oidc@1.4.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-oidc:** Import the modules by their file so Node resolves them ([f5a9b36](https://github.com/linagora/twake-libs/commit/f5a9b369a3492c8515bb4ebc4b4aeabf3d9e26b5))
+
 ## @linagora/twake-oidc [1.4.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-oidc@1.4.0...@linagora/twake-oidc@1.4.1) (2026-11-18)
 
 

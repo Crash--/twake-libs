@@ -1,6 +1,6 @@
 import { feedbackIntegration } from '@sentry/react'
 
-import type { FeedbackLabels } from './locales'
+import type { FeedbackLabels } from './locales.js'
 
 export type FeedbackIntegration = ReturnType<typeof feedbackIntegration>
 

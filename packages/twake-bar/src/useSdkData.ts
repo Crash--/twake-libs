@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import type { Sdk } from '@linagora/twake-sdk'
 
-import { useSdk, useSdkStatus } from './SdkProvider'
+import { useSdk, useSdkStatus } from './SdkProvider.js'
 
 export interface SdkData<T> {
   data: T | null

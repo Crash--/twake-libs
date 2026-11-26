@@ -5,14 +5,14 @@ import {
   registerWebSocketState,
   WebSocketWithCleanup,
   WebSocketCallbacks
-} from '../connection'
+} from '../connection/index.js'
 import {
   closeWebSocketConnection,
   establishWebSocketConnection,
   setupWebSocketPing,
   PingConfig
-} from '../lifecycle'
-import { useWebSocketReconnect } from './useReconnect'
+} from '../lifecycle/index.js'
+import { useWebSocketReconnect } from './useReconnect.js'
 
 export interface UseWebSocketOptions {
   /** Base URL for the WebSocket server (e.g. https://example.com or wss://example.com) */

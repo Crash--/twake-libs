@@ -5,7 +5,7 @@ import {
   buildMailtoUri,
   buildMailComposerUrl,
   generateMailComposerUrl
-} from './mailSpaUrl'
+} from './mailSpaUrl.js'
 
 describe('resolveMailSpaUrl', () => {
   it('resolves a plain URL template', () => {

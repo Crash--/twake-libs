@@ -1,5 +1,5 @@
-import { WS_EVENTS } from '../protocols'
-import { CreateConnectionOptions, WebSocketWithCleanup } from './types'
+import { WS_EVENTS } from '../protocols.js'
+import { CreateConnectionOptions, WebSocketWithCleanup } from './types.js'
 
 export async function createWebSocketConnection(
   options: CreateConnectionOptions

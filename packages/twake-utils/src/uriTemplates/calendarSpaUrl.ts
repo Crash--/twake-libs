@@ -1,4 +1,4 @@
-import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils'
+import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils.js'
 
 // Characters that would end the address or start new query parameters.
 // An attendee address carrying them could add hidden parameters to the URL.

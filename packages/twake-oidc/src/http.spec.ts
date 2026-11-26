@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 describe('API requests', () => {
-  let addAuthorization: typeof import('./http').addAuthorization
-  let redirectOnUnauthorized: typeof import('./http').redirectOnUnauthorized
-  let oidc: typeof import('./oidc')
-  let setTokenSet: typeof import('./session').setTokenSet
+  let addAuthorization: typeof import('./http.js').addAuthorization
+  let redirectOnUnauthorized: typeof import('./http.js').redirectOnUnauthorized
+  let oidc: typeof import('./oidc.js')
+  let setTokenSet: typeof import('./session.js').setTokenSet
 
   beforeEach(async () => {
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
     // Fresh modules: the redirect in progress is module state
     vi.resetModules()
-    ;({ addAuthorization, redirectOnUnauthorized } = await import('./http'))
-    oidc = await import('./oidc')
-    ;({ setTokenSet } = await import('./session'))
-    const { setUpBrowser } = await import('./testUtils')
+    ;({ addAuthorization, redirectOnUnauthorized } = await import('./http.js'))
+    oidc = await import('./oidc.js')
+    ;({ setTokenSet } = await import('./session.js'))
+    const { setUpBrowser } = await import('./testUtils.js')
     setUpBrowser('https://app.example.com/contacts')
   })
 
@@ -60,7 +60,7 @@ describe('API requests', () => {
 
   it('framed, tells the page around the frame once, and does not leave', async () => {
     const onLoginRequired = vi.fn()
-    const { setUpBrowser } = await import('./testUtils')
+    const { setUpBrowser } = await import('./testUtils.js')
     setUpBrowser('https://app.example.com/embed/calendars/team', {
       framed: true,
       onLoginRequired
@@ -79,7 +79,7 @@ describe('API requests', () => {
   })
 
   it('fetches with the token, and signs in again on a 401', async () => {
-    const { fetchSignedIn } = await import('./http')
+    const { fetchSignedIn } = await import('./http.js')
     const startLogin = vi.spyOn(oidc, 'startLogin').mockResolvedValue()
     const fetch = vi.fn(() =>
       Promise.resolve(new Response(null, { status: 401 }))

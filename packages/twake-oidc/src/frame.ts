@@ -6,7 +6,7 @@ import {
   isLoginRequired,
   LoginRequiredError,
   type LoginResult
-} from './oidc'
+} from './oidc.js'
 
 export type SignInResult = Omit<LoginResult, 'returnTo'>
 

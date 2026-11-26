@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { AppsMenu } from './AppsMenu'
-import { makeApp, makeSdk, renderWithSdk } from './testUtils'
+import { AppsMenu } from './AppsMenu.js'
+import { makeApp, makeSdk, renderWithSdk } from './testUtils.js'
 
 const openMenu = async (): Promise<HTMLElement> => {
   const user = userEvent.setup()

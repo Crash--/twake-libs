@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createSdk, MAX_ERROR_MESSAGE, SdkError, type Sdk } from './sdk'
+import { createSdk, MAX_ERROR_MESSAGE, SdkError, type Sdk } from './sdk.js'
 import {
   CREDENTIALS,
   PLATFORM_URL,
@@ -9,7 +9,7 @@ import {
   json,
   requestsTo,
   stubFetch
-} from './testUtils'
+} from './testUtils.js'
 
 const EXCHANGE = { '/auth/token_exchange': (): Response => json(CREDENTIALS) }
 

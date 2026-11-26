@@ -1,4 +1,4 @@
-import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils'
+import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils.js'
 
 /**
  * Resolve a mail SPA URL template.

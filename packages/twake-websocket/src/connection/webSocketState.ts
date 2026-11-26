@@ -1,6 +1,6 @@
 import { type MutableRefObject } from 'react'
 
-import type { WebSocketWithCleanup } from './types'
+import type { WebSocketWithCleanup } from './types.js'
 
 interface WebSocketState {
   socketRef: MutableRefObject<WebSocketWithCleanup | null> | null

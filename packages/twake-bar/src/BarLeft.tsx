@@ -5,9 +5,9 @@ import { Divider, styled, useBreakpoints } from '@linagora/twake-mui'
 import type { Sdk } from '@linagora/twake-sdk'
 import { useI18n } from 'twake-i18n'
 
-import { useSdk, useSdkStatus } from './SdkProvider'
-import { useBarLocales } from './useBarLocales'
-import { useSdkData } from './useSdkData'
+import { useSdk, useSdkStatus } from './SdkProvider.js'
+import { useBarLocales } from './useBarLocales.js'
+import { useSdkData } from './useSdkData.js'
 
 export interface BarApp {
   slug: string

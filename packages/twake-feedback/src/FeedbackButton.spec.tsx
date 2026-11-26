@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { Dialog } from '@linagora/twake-mui'
 
-import { FeedbackButton, type FeedbackButtonProps } from './FeedbackButton'
-import { renderWithProviders } from './testUtils'
+import { FeedbackButton, type FeedbackButtonProps } from './FeedbackButton.js'
+import { renderWithProviders } from './testUtils.js'
 
 const STORAGE = 'twake-feedback:test'
 const VIEWPORT = { width: 1024, height: 768 }
@@ -68,7 +68,7 @@ const drag = (
 }
 
 const flushTimers = (): Promise<void> =>
-  act(() => new Promise(resolve => setTimeout(resolve, 0)))
+  act(() => new Promise<void>(resolve => setTimeout(resolve, 0)))
 
 const setup = (
   props: Partial<FeedbackButtonProps> = {},

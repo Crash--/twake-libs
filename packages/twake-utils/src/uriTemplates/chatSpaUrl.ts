@@ -1,4 +1,4 @@
-import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils'
+import { resolveUriTemplate, UriTemplateContext } from './uriTemplateUtils.js'
 
 // A Matrix localpart with an optional "@", or a full "@user:server[:port]" ID.
 // A dot-only localpart is refused: "." and ".." are path dot segments.

@@ -1,6 +1,6 @@
 import { Dispatch, MutableRefObject, SetStateAction, useCallback } from 'react'
 
-import { getRetryDelay, RetryBackoffConfig } from '../utils/getRetryDelay'
+import { getRetryDelay, RetryBackoffConfig } from '../utils/getRetryDelay.js'
 
 export const RECONNECT_CONFIG: RetryBackoffConfig = {
   initialDelay: 1000, // 1 second
