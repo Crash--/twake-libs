@@ -6,9 +6,9 @@ import {
   getPendingReturnTo,
   LoginRequiredError,
   startLogin
-} from './oidc'
-import { getAccessToken, clearTokenSet } from './session'
-import { setUpBrowser } from './testUtils'
+} from './oidc.js'
+import { getAccessToken, clearTokenSet } from './session.js'
+import { setUpBrowser } from './testUtils.js'
 
 vi.mock('openid-client', () => ({
   discovery: vi.fn().mockResolvedValue({}),
