@@ -1,3 +1,10 @@
+## @linagora/twake-bar [1.3.2](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.3.1...@linagora/twake-bar@1.3.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **twake-bar:** Import the modules by their file so Node resolves them ([c6f44b5](https://github.com/linagora/twake-libs/commit/c6f44b5a2fafe6768902ed78cbd895577d337af5))
+
 ## @linagora/twake-bar [1.3.1](https://github.com/linagora/twake-libs/compare/@linagora/twake-bar@1.3.0...@linagora/twake-bar@1.3.1) (2026-11-26)
 
 
