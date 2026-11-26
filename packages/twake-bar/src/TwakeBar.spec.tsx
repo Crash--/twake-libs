@@ -136,6 +136,50 @@ describe('TwakeBar', () => {
       expect(screen.queryByRole('button', { name: 'Help' })).toBe(null)
     })
 
+    it.each(['mailto:support@example.com', '  mailto:support@example.com'])(
+      'opens %j alone in the same tab',
+      async href => {
+        renderBar(makeSdk({ context: {} }), {
+          helpItems: [{ label: 'Write to the support', href }]
+        })
+
+        const single = await screen.findByRole('link', {
+          name: 'Write to the support'
+        })
+        expect(single).toHaveAttribute('href', href)
+        expect(single).not.toHaveAttribute('target')
+      }
+    )
+
+    it('opens the entries that are not web pages in the same tab', async () => {
+      const user = userEvent.setup()
+      renderBar(makeSdk({ context: { help_link: 'https://help.example' } }), {
+        helpItems: [
+          { label: 'Write to the support', href: 'mailto:support@example.com' },
+          { label: 'Call the support', href: 'tel:+33100000000' },
+          { label: 'Write again', href: ' MAILTO:support@example.com' },
+          SUPPORT
+        ]
+      })
+
+      await user.click(await screen.findByRole('button', { name: 'Help' }))
+      for (const name of [
+        'Write to the support',
+        'Call the support',
+        'Write again'
+      ]) {
+        expect(
+          await screen.findByRole('menuitem', { name })
+        ).not.toHaveAttribute('target')
+      }
+      expect(
+        screen.getByRole('menuitem', { name: 'Get help or report a bug' })
+      ).toHaveAttribute('target', '_blank')
+      expect(
+        screen.getByRole('menuitem', { name: 'Help center' })
+      ).toHaveAttribute('target', '_blank')
+    })
+
     it('takes an empty help link for none', async () => {
       renderBar(makeSdk({ context: { help_link: '' } }), {
         helpItems: [SUPPORT]
