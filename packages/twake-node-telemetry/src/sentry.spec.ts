@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/node'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { createLogger } from './index'
-import { initSentry } from './sentry'
+import { createLogger } from './index.js'
+import { initSentry } from './sentry.js'
 
 describe('initSentry', () => {
   afterEach(async () => {
